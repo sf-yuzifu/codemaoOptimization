@@ -12,9 +12,6 @@
 // @require      https://fastly.jsdelivr.net/npm/lil-gui@0.16
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/tldjs/2.3.1/tld.min.js
 // @require      https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.js
-// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/react/18.2.0/umd/react.production.min.js
-// @require      https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/react-dom/18.2.0/umd/react-dom.production.min.js
-// @require      https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/1.1.1/umd/doc.umd.js
 // @require      https://greasyfork.org/scripts/465118-librarycomment/code/libraryComment.js?version=1229105
 // @license      616 SB License
 // ==/UserScript==
