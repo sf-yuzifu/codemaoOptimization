@@ -1,5 +1,8 @@
 # 编程猫使用优化
 
+<a href='https://github.com/sf-yuzifu/codemaoOptimization/stargazers'><img alt="GitHub stars" src="https://img.shields.io/github/stars/sf-yuzifu/codemaoOptimization?style=social"></a>
+<a href='https://gitee.com/sf-yuzifu/codemaoOptimization/stargazers'><img src='https://gitee.com/sf-yuzifu/codemaoOptimization/badge/star.svg?theme=dark' alt='star'></img></a>
+
 ## 声明
 
 * 该脚本为小鱼个人使用，发布仅为了让一些跟我同受一样烦恼的人使用，如触犯到你的权益，请与我联系（QQ：1906929246）！
@@ -50,6 +53,6 @@
 
  2. 安装“编程猫使用优化”脚本 
 * 使用Tampermonkey的可以直接点击上方安装地址，然后点击“安装此脚本”，稍等会有一个安装窗口弹出来要求是否进行安装，点“安装”即可
-* 使用Stay的点击左上角的“+”号，然后选择“从链接导入”，导入“https://greasyfork.org/scripts/449950-%E7%BC%96%E7%A8%8B%E7%8C%AB%E4%BD%BF%E7%94%A8%E4%BC%98%E5%8C%96/code/%E7%BC%96%E7%A8%8B%E7%8C%AB%E4%BD%BF%E7%94%A8%E4%BC%98%E5%8C%96.user.js” ，接着点击右上角的“创建脚本”进行安装即可
+* 使用Stay的点击左上角的“+”号，然后选择“从链接导入”，导入"https://greasyfork.org/scripts/449950-%E7%BC%96%E7%A8%8B%E7%8C%AB%E4%BD%BF%E7%94%A8%E4%BC%98%E5%8C%96/code/%E7%BC%96%E7%A8%8B%E7%8C%AB%E4%BD%BF%E7%94%A8%E4%BC%98%E5%8C%96.user.js"，接着点击右上角的“创建脚本”进行安装即可
 
- 3. 找到导航栏上方的“设置”按钮（铃铛旁边），点击进入设置页面，享受自定义的快乐吧！Enjoy it!
+ 1. 找到导航栏上方的“设置”按钮（铃铛旁边），点击进入设置页面，享受自定义的快乐吧！Enjoy it!
