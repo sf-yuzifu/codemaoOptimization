@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.42.253
+// @version      1.42.254
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -14,7 +14,6 @@
 // @require      https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.js
 // @require      https://greasyfork.org/scripts/465118-librarycomment/code/libraryComment.js?version=1229105
 // @license      616 SB License
-// @downloadURL none
 
 // ==/UserScript==
 
@@ -261,7 +260,8 @@
       //尝试制作防劫持
       if (
         window.location.href.indexOf("message") != -1 ||
-        ((window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) && parseInt(window.location.href.slice(25 + 11)) && document.querySelector("iframe"))
+        ((window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) && parseInt(window.location.href.slice(25 + 11)) && document.querySelector("iframe")) ||
+        window.location.href.indexOf("reader") != -1
       ) {
         var iframes = document.querySelectorAll("iframe");
         for (var i = 0; i < iframes.length; i++) {
