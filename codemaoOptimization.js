@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.42.250
+// @version      1.42.252
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -256,7 +256,8 @@
           new Viewer(photos);
         }
       }
-
+      // 白名单
+      let whiteList = ["box3.codemao.cn", "pickduck.cn", "shequ.codemao.cn", "player.codemao.cn"];
       //尝试制作防劫持
       if (
         window.location.href.indexOf("message") != -1 ||
@@ -264,7 +265,7 @@
       ) {
         var iframes = document.querySelectorAll("iframe");
         for (var i = 0; i < iframes.length; i++) {
-          if (tldjs.getDomain(iframes[i].getAttribute("src")) != "pickduck.cn" && tldjs.getDomain(iframes[i].getAttribute("src")) != "shequ.codemao.cn" && tldjs.getDomain(iframes[i].getAttribute("src")) != "player.codemao.cn" && tldjs.getDomain(iframes[i].getAttribute("src")) != "box3.codemao.cn") {
+          if (!whiteList.includes(tldjs.getDomain(iframes[i].getAttribute("src")))) {
             iframes[i].style.position = "inherit";
             if (!iframes[i].getAttribute("sandbox") && iframes[i] != document.querySelector(".mce-edit-area iframe")) {
               iframes[i].setAttribute("sandbox", "allow-forms allow-scripts allow-same-origin allow-popups");
