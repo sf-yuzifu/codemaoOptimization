@@ -264,7 +264,7 @@
       ) {
         var iframes = document.querySelectorAll("iframe");
         for (var i = 0; i < iframes.length; i++) {
-          if (tldjs.getDomain(iframes[i].getAttribute("src")) != "pickduck.cn") {
+          if (tldjs.getDomain(iframes[i].getAttribute("src")) != "pickduck.cn" && tldjs.getDomain(iframes[i].getAttribute("src")) != "shequ.codemao.cn" && tldjs.getDomain(iframes[i].getAttribute("src")) != "player.codemao.cn" && tldjs.getDomain(iframes[i].getAttribute("src")) != "box3.codemao.cn") {
             iframes[i].style.position = "inherit";
             if (!iframes[i].getAttribute("sandbox") && iframes[i] != document.querySelector(".mce-edit-area iframe")) {
               iframes[i].setAttribute("sandbox", "allow-forms allow-scripts allow-same-origin allow-popups");
