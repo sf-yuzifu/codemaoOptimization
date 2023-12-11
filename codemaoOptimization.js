@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.42.252
+// @version      1.42.253
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -1812,52 +1812,33 @@
             data: document.cookie,
             binary: true,
             async onload({ response }) {
-              var options;
+              var options, info;
               if (JSON.parse(response).user_id) {
+                if (Notification.permission !== "denied") {
+                  Notification.requestPermission().then((permission) => {});
+                }
                 if (!localStorage.getItem("user" + JSON.parse(response).user_id)) {
                   localStorage.setItem("user" + JSON.parse(response).user_id, JSON.parse(response).fans_total + "," + JSON.parse(response).liked_total);
                 }
                 if (localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[0] != JSON.parse(response).fans_total) {
-                  if (localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[0] < JSON.parse(response).fans_total) {
-                    options = {
-                      body: `现在你的粉丝数为：${JSON.parse(response).fans_total}，比上次多了${JSON.parse(response).fans_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[0]}个`,
-                      icon: "https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3",
-                      tag: "fans_total",
-                    };
-                    var n = Notification.requestPermission(function (status) {
-                      new Notification("粉丝数", options); // 显示通知
-                    });
-                  } else {
-                    options = {
-                      body: `现在你的粉丝数为：${JSON.parse(response).fans_total}，比上次少了${-(JSON.parse(response).fans_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[0])}个`,
-                      icon: "https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3",
-                      tag: "fans_total",
-                    };
-                    var n = Notification.requestPermission(function (status) {
-                      new Notification("粉丝数", options); // 显示通知
-                    });
-                  }
+                  info = JSON.parse(response).fans_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[0] > 0 ? "多" : "少";
+                  options = {
+                    body: `现在你的粉丝数为：${JSON.parse(response).fans_total}，比上次${info}了${Math.abs(JSON.parse(response).fans_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[0])}个`,
+                    icon: "https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3",
+                    tag: "fans_total",
+                  };
+                  if (n) n.close();
+                  var n = new Notification("粉丝数", options); // 显示通知
                 }
                 if (localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[1] != JSON.parse(response).liked_total) {
-                  if (localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[1] > JSON.parse(response).liked_total) {
-                    options = {
-                      body: `现在你的点赞数为：${JSON.parse(response).liked_total}，比上次多了${JSON.parse(response).liked_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[1]}个`,
-                      icon: "https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3",
-                      tag: "liked_total",
-                    };
-                    var k = Notification.requestPermission(function (status) {
-                      new Notification("点赞数", options); // 显示通知
-                    });
-                  } else {
-                    options = {
-                      body: `现在你的点赞数为：${JSON.parse(response).liked_total}，比上次少了${-(JSON.parse(response).liked_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[1])}个`,
-                      icon: "https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3",
-                      tag: "liked_total",
-                    };
-                    var k = Notification.requestPermission(function (status) {
-                      new Notification("点赞数", options); // 显示通知
-                    });
-                  }
+                  info = JSON.parse(response).liked_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[1] > 0 ? "多" : "少";
+                  options = {
+                    body: `现在你的点赞数为：${JSON.parse(response).liked_total}，比上次${info}了${Math.abs(JSON.parse(response).liked_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[1])}个`,
+                    icon: "https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3",
+                    tag: "liked_total",
+                  };
+                  if (k) k.close();
+                  var k = new Notification("点赞数", options); // 显示通知
                 }
                 localStorage.setItem("user" + JSON.parse(response).user_id, JSON.parse(response).fans_total + "," + JSON.parse(response).liked_total);
               }
