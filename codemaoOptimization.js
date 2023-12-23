@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.42.257
+// @version      1.42.258
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -37,6 +37,80 @@
       document.querySelector("title").innerHTML = content;
     }
   }
+  // 感谢刘andy提供的代码awa
+  unsafeWindow._dangerouslyOpenNewWindow = unsafeWindow.open;
+  unsafeWindow.open = (url) => {
+    // console.log("捕获");
+    if (url.includes("community") || url.includes("wiki/forum")) {
+      // console.log("发现为帖子");
+      let id = "";
+      if (url.includes("community")) {
+        id = url.split("/")[2];
+      } else {
+        id = url.split("/")[3];
+      }
+      console.log(id);
+      $.ajax({
+        type: "GET",
+        url: `https://api.codemao.cn/web/forums/posts/${id}/details`,
+        contentType: "application/json;charset=UTF-8",
+        async: true,
+        xhrFields: {
+          withCredentials: true,
+        },
+        success: function (obj) {
+          // console.log(obj.content.toLowerCase());
+          if (obj.content.toLowerCase().includes("</iframe>") || obj.content.toLowerCase().includes("</embed>") || obj.content.toLowerCase().includes("<iframe") || obj.content.toLowerCase().includes("<embed")) {
+            swal({
+              title: "危险",
+              text: "即将访问的帖子存在风险！",
+              icon: "error",
+              dangerMode: true,
+              buttons: { visit: "继续访问(不推荐)", danger: "立即退出(推荐)" },
+            }).then((x) => {
+              if (x == "visit") {
+                swal({
+                  title: "警告",
+                  text: "您真的要继续访问吗？",
+                  dangerMode: true,
+                  buttons: { visit: "继续访问(不推荐)", danger: "立即退出(推荐)" },
+                }).then((x) => {
+                  if (x == "visit") {
+                    return unsafeWindow._dangerouslyOpenNewWindow(url);
+                  }
+                  return null;
+                });
+              }
+              return null;
+            });
+          } else {
+            return unsafeWindow._dangerouslyOpenNewWindow(url);
+          }
+        },
+        error: function (res) {
+          swal({
+            title: "警告",
+            text: "无法甄别即将访问的帖子是否危险！",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "暂不访问",
+            cancelButtonText: "继续访问",
+            closeOnClickOutside: false,
+          }).then((x) => {
+            if (x != true) {
+              return unsafeWindow._dangerouslyOpenNewWindow(url);
+            }
+            return null;
+          });
+          // console.log(res.responseJSON);
+        },
+      });
+    } else {
+      // console.log("catched go");
+      return unsafeWindow._dangerouslyOpenNewWindow(url);
+    }
+  };
+
   $("head").append(
     `
     <link rel="shortcut icon" href="https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3">
@@ -1071,12 +1145,7 @@
             localStorage.setItem("md-use", "true");
           } else {
             localStorage.setItem("md-use", "");
-            remove_md()
-            // swal("将要刷新页面以保存修改", { buttons: ["取消", "确认"] }).then((value) => {
-            //   if (value) {
-            //     window.location.reload();
-            //   }
-            // });
+            remove_md();
           }
         });
         $("input#customLogo").on("change", () => {
@@ -1948,8 +2017,6 @@
           ) {
             if (Boolean(localStorage.getItem("md-use")) && document.getElementsByClassName("r-community-c-forum_sender--option")[0].style.display != "none") {
               bcm_markdown();
-            } else{
-              // remove_md();
             }
             var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
             var windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
@@ -1978,20 +2045,19 @@
             }
           } catch (e) {}
           if (window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) {
-            /*
-                      if (document.querySelector('.r-community--forum_list2') == null) {
-                          $('.r-community--forum_list').after("<div style='display:none' class='r-community--forum_list2'></div>")
-                      }
-                      if (document.querySelector('.r-community--forum_list div:not(div[class])') != null && document.querySelector(".r-community--forum_filter") != null && document.querySelector("#fan") == null) {
-                          var forum_list = document.querySelectorAll('.r-community--forum_list div:not(div[class])')
-                          for (i of forum_list) {
-                              let oCopy = i.cloneNode(true)
-                              $('.r-community--forum_list2').append(oCopy)
-                          }
-                          $('.r-community--forum_list div:not(div[class])').css('display', 'none')
-                          $('.r-community--forum_filter').after(document.querySelector('.r-community--forum_list2').innerHTML)
-                          $('.r-community--forum_list').append("<div id='fan' class></div>")
-                      }*/
+            // if (document.querySelector(".r-community--forum_list2") == null) {
+            //   $(".r-community--forum_list").after("<div style='display:none' class='r-community--forum_list2'></div>");
+            // }
+            // if (document.querySelector(".r-community--forum_list div:not(div[class])") != null && document.querySelector(".r-community--forum_filter") != null && document.querySelector("#fan") == null) {
+            //   var forum_list = document.querySelectorAll(".r-community--forum_list div:not(div[class])");
+            //   for (i of forum_list) {
+            //     let oCopy = i.cloneNode(true);
+            //     $(".r-community--forum_list2").append(oCopy);
+            //   }
+            //   $(".r-community--forum_list div:not(div[class])").css("display", "none");
+            //   $(".r-community--forum_filter").after(document.querySelector(".r-community--forum_list2").innerHTML);
+            //   $(".r-community--forum_list").append("<div id='fan' class></div>");
+            // }
           }
           if (window.location.href.indexOf("/message") != -1) {
             scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
