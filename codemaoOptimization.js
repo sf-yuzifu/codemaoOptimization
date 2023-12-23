@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.43.260
+// @version      1.43.261
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -1666,6 +1666,7 @@
                         });
                         document.querySelector(".swal-content").style = "max-height: 400px;overflow: auto;";
                         $(copymefuck).before("<p id='hidenotpub' class='pubornot'>隐藏未发布的</p>");
+                        $(copymefuck).before(`<p>原作品ID：<a href="https://shequ.codemao.cn/work/${JSON.parse(response).id}" target="_blank">${JSON.parse(response).id}</a></p>`);
                         $(".pubornot").on("click", function () {
                           if (document.querySelector(".pubornot").id == "hidenotpub") {
                             $('tr[published="0"]').css("display", "none");
