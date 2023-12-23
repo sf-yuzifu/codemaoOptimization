@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.42.254
+// @version      1.42.257
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -39,14 +39,45 @@
   }
   $("head").append(
     `
-            <link rel="shortcut icon" href="https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3">
-            <link href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.css" rel="stylesheet">
-            <script src="https://fastly.jsdelivr.net/gh/214545666/eat-fish-together@master/main.js"></script>
-      `
+    <link rel="shortcut icon" href="https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3">
+    <link href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.css" rel="stylesheet">
+    <script src="https://fastly.jsdelivr.net/gh/sf-yuzifu/eat-fish-together@master/main.js"></script>
+    `
   );
   if (!document.querySelector('meta[name="theme-color"]')) {
     $("head").append(`<meta name="theme-color" content="">`);
   }
+  setInterval(() => {
+    // 白名单
+    let whiteList = ["box3.codemao.cn", "pickduck.cn", "shequ.codemao.cn", "player.codemao.cn", "static.yuzifu.top"];
+    //尝试制作防劫持
+    if (
+      window.location.href.indexOf("message") != -1 ||
+      ((window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) && parseInt(window.location.href.slice(25 + 11)) && document.querySelector("iframe")) ||
+      window.location.href.indexOf("reader") != -1
+    ) {
+      var iframes = document.querySelectorAll("iframe");
+      for (var i = 0; i < iframes.length; i++) {
+        if (!whiteList.includes(tldjs.getDomain(iframes[i].getAttribute("src")))) {
+          iframes[i].style.position = "inherit";
+          if (!iframes[i].getAttribute("sandbox") && iframes[i] != document.querySelector(".mce-edit-area iframe")) {
+            iframes[i].setAttribute("sandbox", "allow-forms allow-scripts allow-same-origin allow-popups");
+            iframes[i].setAttribute("src", "https://static.yuzifu.top/bcm/iframe.php?url=" + iframes[i].getAttribute("src"));
+          }
+        }
+      }
+      var embeds = document.querySelectorAll("embed");
+      for (i = 0; i < embeds.length; i++) {
+        if (!whiteList.includes(tldjs.getDomain(iframes[i].getAttribute("src")))) {
+          var embed_to_iframe = document.createElement("iframe");
+          embed_to_iframe.style.width = embeds[i].style.width;
+          embed_to_iframe.style.height = embeds[i].style.height;
+          embed_to_iframe.setAttribute("src", embeds[i].getAttribute("src"));
+          embeds[i].parentNode.replaceChild(embed_to_iframe, embeds[i]);
+        }
+      }
+    }
+  }, 10);
   setInterval(() => {
     GM_xmlhttpRequest({
       method: "get",
@@ -255,35 +286,6 @@
           new Viewer(photos);
         }
       }
-      // 白名单
-      let whiteList = ["box3.codemao.cn", "pickduck.cn", "shequ.codemao.cn", "player.codemao.cn"];
-      //尝试制作防劫持
-      if (
-        window.location.href.indexOf("message") != -1 ||
-        ((window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) && parseInt(window.location.href.slice(25 + 11)) && document.querySelector("iframe")) ||
-        window.location.href.indexOf("reader") != -1
-      ) {
-        var iframes = document.querySelectorAll("iframe");
-        for (var i = 0; i < iframes.length; i++) {
-          if (!whiteList.includes(tldjs.getDomain(iframes[i].getAttribute("src")))) {
-            iframes[i].style.position = "inherit";
-            if (!iframes[i].getAttribute("sandbox") && iframes[i] != document.querySelector(".mce-edit-area iframe")) {
-              iframes[i].setAttribute("sandbox", "allow-forms allow-scripts allow-same-origin allow-popups");
-              iframes[i].setAttribute("src", "https://static.yuzifu.top/bcm/iframe.php?url=" + iframes[i].getAttribute("src"));
-            }
-          }
-        }
-        var embeds = document.querySelectorAll("embed");
-        for (i = 0; i < embeds.length; i++) {
-          if (tldjs.getDomain(embeds[i].getAttribute("src")) != "pickduck.cn") {
-            var embed_to_iframe = document.createElement("iframe");
-            embed_to_iframe.style.width = embeds[i].style.width;
-            embed_to_iframe.style.height = embeds[i].style.height;
-            embed_to_iframe.setAttribute("src", embeds[i].getAttribute("src"));
-            embeds[i].parentNode.replaceChild(embed_to_iframe, embeds[i]);
-          }
-        }
-      }
 
       if (document.querySelector(".r-404--container") != null) {
         titleChange("404 | 编程猫社区");
@@ -314,11 +316,6 @@
         let PICKCAT = localStorage.getItem("customLogo") || "PICKCAT";
         $(".c-navigator--logo_wrap").append(`<span class='pickcat'>${PICKCAT}</span>`);
         $(".index__header-brand___2nK8h").append(`<span class='pickcat'>${PICKCAT}</span>`);
-        if (localStorage.getItem("customLogo") == "赛马娘") {
-          swal({ title: "俺の愛馬が!" }).then(() => {
-            new Audio("https://static.codemao.cn/coco/player/unstable/SyisvMdzh.audio/wav?hash=Fk-Rt4mrWi5ORbC1AD8qs49BFPhJ").play();
-          });
-        }
         $("li[data-watch_event='下载APP-入口tab']").after(`<li class="event_target data_report c-navigator--item" data-watch_event="设置-入口tab" data-extra_word_one="点击" data-data_report_btn_name="设置-入口tab"><a>设置</a></li>`);
         $("li.index__first-nav-content___1Ea0w:last-child").before(
           `<li data-watch_event="设置-入口tab" data-extra_word_one="点击" data-data_report_btn_name="设置-入口tab" class="index__first-nav-content___1Ea0w"><div class="index__more_nav___2gH4S"><a>设置</a><span> </span><i></i></div></li>`
@@ -403,10 +400,6 @@
                       <div class="color-sel">
                         <span>语雀Markdown编辑器</span>
                         <input id="md-use" type="checkbox" value="" checked/>
-                      </div>
-                      <div class="color-sel">
-                        <span>编创协Markdown编辑器</span>
-                        <input id="bcx-md-use" type="checkbox" value="" checked/>
                       </div>
                       <div class="color-sel">
                         <span>论坛自动翻页（实验性）</span>
@@ -1073,44 +1066,17 @@
             localStorage.setItem("auto-turn", "");
           }
         });
-        $("input#bcx-md-use").on("change", () => {
-          if (document.querySelector("input#bcx-md-use").checked) {
-            if (!document.querySelector("input#md-use").checked) {
-              localStorage.setItem("bcx-md-use", "true");
-            } else {
-              swal({
-                text: "只能启用一个MD编辑器！",
-                icon: "error",
-              });
-              document.querySelector("input#bcx-md-use").checked = false;
-            }
-          } else {
-            localStorage.setItem("bcx-md-use", "");
-            swal("将要刷新页面以保存修改", { buttons: ["取消", "确认"] }).then((value) => {
-              if (value) {
-                window.location.reload();
-              }
-            });
-          }
-        });
         $("input#md-use").on("change", () => {
           if (document.querySelector("input#md-use").checked) {
-            if (!document.querySelector("input#bcx-md-use").checked) {
-              localStorage.setItem("md-use", "true");
-            } else {
-              swal({
-                text: "只能启用一个MD编辑器！",
-                icon: "error",
-              });
-              document.querySelector("input#md-use").checked = false;
-            }
+            localStorage.setItem("md-use", "true");
           } else {
             localStorage.setItem("md-use", "");
-            swal("将要刷新页面以保存修改", { buttons: ["取消", "确认"] }).then((value) => {
-              if (value) {
-                window.location.reload();
-              }
-            });
+            remove_md()
+            // swal("将要刷新页面以保存修改", { buttons: ["取消", "确认"] }).then((value) => {
+            //   if (value) {
+            //     window.location.reload();
+            //   }
+            // });
           }
         });
         $("input#customLogo").on("change", () => {
@@ -1980,11 +1946,10 @@
             window.location.href.indexOf("wiki/cartoon") == -1 &&
             window.location.href.indexOf("wiki/novel") == -1
           ) {
-            if (Boolean(localStorage.getItem("bcx-md-use")) && !Boolean(localStorage.getItem("md-use")) && document.getElementsByClassName("r-community-c-forum_sender--option")[0].style.display != "none") {
-              bcx_markdown();
-            }
             if (Boolean(localStorage.getItem("md-use")) && document.getElementsByClassName("r-community-c-forum_sender--option")[0].style.display != "none") {
               bcm_markdown();
+            } else{
+              // remove_md();
             }
             var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
             var windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
@@ -2711,7 +2676,6 @@
           $("#second-color").val(localStorage.getItem("second-color") || "#f6b206");
           $("#person-color").val(localStorage.getItem("person-color") || "#000");
           $("#highlight-color").val(localStorage.getItem("highlight-color") || "#ec443d");
-          document.querySelector("input#bcx-md-use").checked = Boolean(localStorage.getItem("bcx-md-use")) ? true : false;
           document.querySelector("input#md-use").checked = Boolean(localStorage.getItem("md-use")) ? true : false;
           document.querySelector("input#auto-turn").checked = Boolean(localStorage.getItem("auto-turn")) ? true : false;
           if (document.querySelector(".c-dialog--dialog_wrap")) {
@@ -2899,168 +2863,23 @@
         display:none;
       }
        </style>`);
-  class Circle {
-    constructor({ origin, speed, color, angle, context }) {
-      this.origin = origin;
-      this.position = { ...this.origin };
-      this.color = color;
-      this.speed = speed;
-      this.angle = angle;
-      this.context = context;
-      this.renderCount = 0;
-    }
 
-    draw() {
-      this.context.fillStyle = this.color;
-      this.context.beginPath();
-      this.context.arc(this.position.x, this.position.y, 2, 0, Math.PI * 2);
-      this.context.fill();
-    }
-
-    move() {
-      this.position.x = Math.sin(this.angle) * this.speed + this.position.x;
-      this.position.y = Math.cos(this.angle) * this.speed + this.position.y + this.renderCount * 0.3;
-      this.renderCount++;
+  function remove_md() {
+    if (document.querySelector(".forum_editor.ne-doc-major-editor")) {
+      $(".yuque-sender,#preview,#yuque").remove();
+      $(".forum_editor .mce-tinymce.mce-container.mce-panel,.r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").show();
+      document.querySelector(".forum_editor").classList.remove("ne-doc-major-editor");
     }
   }
-
-  class Boom {
-    constructor({ origin, context, circleCount = 16, area }) {
-      this.origin = origin;
-      this.context = context;
-      this.circleCount = circleCount;
-      this.area = area;
-      this.stop = false;
-      this.circles = [];
-    }
-
-    randomArray(range) {
-      const length = range.length;
-      const randomIndex = Math.floor(length * Math.random());
-      return range[randomIndex];
-    }
-
-    randomColor() {
-      const range = ["8", "9", "A", "B", "C", "D", "E", "F"];
-      return "#" + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range);
-    }
-
-    randomRange(start, end) {
-      return (end - start) * Math.random() + start;
-    }
-
-    init() {
-      for (let i = 0; i < this.circleCount; i++) {
-        const circle = new Circle({
-          context: this.context,
-          origin: this.origin,
-          color: this.randomColor(),
-          angle: this.randomRange(Math.PI - 1, Math.PI + 1),
-          speed: this.randomRange(1, 6),
-        });
-        this.circles.push(circle);
-      }
-    }
-
-    move() {
-      this.circles.forEach((circle, index) => {
-        if (circle.position.x > this.area.width || circle.position.y > this.area.height) {
-          return this.circles.splice(index, 1);
-        }
-        circle.move();
-      });
-      if (this.circles.length == 0) {
-        this.stop = true;
-      }
-    }
-
-    draw() {
-      this.circles.forEach((circle) => circle.draw());
-    }
-  }
-
-  class CursorSpecialEffects {
-    constructor() {
-      this.computerCanvas = document.createElement("canvas");
-      this.renderCanvas = document.createElement("canvas");
-
-      this.computerContext = this.computerCanvas.getContext("2d");
-      this.renderContext = this.renderCanvas.getContext("2d");
-
-      this.globalWidth = window.innerWidth;
-      this.globalHeight = window.innerHeight;
-
-      this.booms = [];
-      this.running = false;
-    }
-
-    handleMouseDown(e) {
-      const boom = new Boom({
-        origin: { x: e.clientX, y: e.clientY },
-        context: this.computerContext,
-        area: {
-          width: this.globalWidth,
-          height: this.globalHeight,
-        },
-      });
-      boom.init();
-      this.booms.push(boom);
-      this.running || this.run();
-    }
-
-    handlePageHide() {
-      this.booms = [];
-      this.running = false;
-    }
-
-    init() {
-      const style = this.renderCanvas.style;
-      style.position = "fixed";
-      style.top = style.left = 0;
-      style.zIndex = "999999999999999999999999999999999999999999";
-      style.pointerEvents = "none";
-
-      style.width = this.renderCanvas.width = this.computerCanvas.width = this.globalWidth;
-      style.height = this.renderCanvas.height = this.computerCanvas.height = this.globalHeight;
-
-      document.body.append(this.renderCanvas);
-
-      window.addEventListener("mousedown", this.handleMouseDown.bind(this));
-      window.addEventListener("pagehide", this.handlePageHide.bind(this));
-    }
-
-    run() {
-      this.running = true;
-      if (this.booms.length == 0) {
-        return (this.running = false);
-      }
-
-      requestAnimationFrame(this.run.bind(this));
-
-      this.computerContext.clearRect(0, 0, this.globalWidth, this.globalHeight);
-      this.renderContext.clearRect(0, 0, this.globalWidth, this.globalHeight);
-
-      this.booms.forEach((boom, index) => {
-        if (boom.stop) {
-          return this.booms.splice(index, 1);
-        }
-        boom.move();
-        boom.draw();
-      });
-      this.renderContext.drawImage(this.computerCanvas, 0, 0, this.globalWidth, this.globalHeight);
-    }
-  }
-
-  const cursorSpecialEffects = new CursorSpecialEffects();
-  cursorSpecialEffects.init();
 
   function bcm_markdown() {
     if (document.querySelector(".forum_editor:not(.ne-doc-major-editor)")) {
       document.querySelector(".forum_editor").classList.add("ne-doc-major-editor");
-      $(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").after($(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").clone(true)).remove();
-      $(".forum_editor").empty().append(`<iframe style="width:100%;height:100%;" id="yuque" src="https://static.codemao.cn/coco/player/unstable/SykHjpiga.text/html"></iframe>`);
+      $(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").after($(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").clone(true).addClass("yuque-sender")).hide();
+      $(".forum_editor .mce-tinymce.mce-container.mce-panel").hide();
+      $(".forum_editor").append(`<iframe style="width:100%;height:100%;" id="yuque" src="https://static.codemao.cn/coco/player/unstable/SykHjpiga.text/html"></iframe>`);
       $("body").append(`<iframe id="preview" src="" style="width: 100%; height: 100%; z-index: -1; position: fixed;"></iframe>`);
-      document.querySelector(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").onclick = async (e) => {
+      document.querySelector(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option.yuque-sender").onclick = async (e) => {
         let tag;
         e.preventDefault();
         try {
@@ -3072,49 +2891,22 @@
             });
             return false;
           }
-          switch (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText) {
-            case "热门活动":
-              tag = 17;
-              break;
-            case "积木编程乐园":
-              tag = 2;
-              break;
-            case "工作室&师徒":
-              tag = 10;
-              break;
-            case "你问我答":
-              tag = 5;
-              break;
-            case "神奇代码岛":
-              tag = 3;
-              break;
-            case "图书馆":
-              tag = 6;
-              break;
-            case "CoCo应用创作":
-              tag = 27;
-              break;
-            case "Python乐园":
-              tag = 11;
-              break;
-            case "源码精灵":
-              tag = 26;
-              break;
-            case "NOC编程猫比赛":
-              tag = 13;
-              break;
-            case "通天塔":
-              tag = 4;
-              break;
-            case "灌水池塘":
-              tag = 7;
-              break;
-            case "训练师小课堂":
-              tag = 28;
-              break;
-            default:
-              break;
-          }
+          let tags = {
+            热门活动: 17,
+            积木编程乐园: 2,
+            "工作室&师徒": 10,
+            你问我答: 5,
+            神奇代码岛: 3,
+            图书馆: 6,
+            CoCo应用创作: 27,
+            Python乐园: 11,
+            源码精灵: 26,
+            NOC编程猫比赛: 13,
+            通天塔: 4,
+            灌水池塘: 7,
+            训练师小课堂: 28,
+          };
+          tag = tags[document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText];
           document.querySelector("#yuque").contentWindow.postMessage("data", "*");
           //<img src="${1}" width="0.1" height="0.1" />
           let texts, trueURL, previewContent;
@@ -3262,328 +3054,5 @@
         }
       };
     }
-  }
-
-  //声明一下，这个是经过冷鱼授权的了（他的委托），所以并上去了
-  function bcx_markdown() {
-    try {
-      var box = document.querySelector(".mce-tinymce");
-      box.style.display = "none";
-      document.getElementsByClassName("r-community-c-forum_sender--container")[0].style.width = "100%";
-      document.getElementsByClassName("r-community-c-forum_sender--option")[0].style.display = "none";
-      var doNotShield = {
-        obj: {
-          height: 380,
-          mddata: "带全屏按钮+文本",
-          banner: "",
-          lx: "",
-          lxx: "",
-          fq: "",
-          cs: 0,
-          id: 0,
-          name: "",
-          xjm: "",
-          cookie: "",
-          tzidc: "",
-          gs: "",
-          ram: 0,
-          user: "",
-          avatar_url: "",
-          bcmid: "",
-          csa: 0,
-          yqtz: "",
-          size: "",
-          js: "",
-        },
-
-        beign: async () => {
-          if (doNotShield.obj.csa == 1) {
-            alert("你目前在测试，无法进行创建正式帖哦！请刷新网页再试！");
-          } else {
-            if (document.getElementsByClassName("r-community-c-forum_sender--title_input")[0].value == "") {
-              alert("请先在 （【发帖关键字】请输入标题（5-50字符以内】）输入框内写上本次文章标题。");
-            } else {
-              doNotShield.obj.name = document.getElementsByClassName("r-community-c-forum_sender--title_input")[0].value;
-              if (doNotShield.obj.cs == 0) {
-                doNotShield.obj.cs += 1;
-                GM_xmlhttpRequest({
-                  method: "get",
-                  url: "https://api.codemao.cn/web/users/details",
-                  data: document.cookie,
-                  binary: true,
-                  async onload({ response }) {
-                    doNotShield.obj.id = JSON.parse(response).id;
-                    doNotShield.obj.user = JSON.parse(response).nickname;
-                    doNotShield.obj.avatar_url = JSON.parse(response).avatar_url;
-                    GM_xmlhttpRequest({
-                      method: "get",
-                      url: "https://api.bcmcreator.cn/MD/edit/examples/savea.php?id=" + doNotShield.obj.id + "&name=" + doNotShield.obj.name,
-                      binary: true,
-                      async onload({ response }) {
-                        doNotShield.obj.xjm = response;
-                        var p = document.createElement("iframe");
-                        p.height = "1000px";
-                        p.width = "100%";
-                        p.id = "myFrame";
-                        p.src = "https://api.bcmcreator.cn/MD/edit/examples/full.php?id=" + doNotShield.obj.id + "&xjm=" + doNotShield.obj.xjm + "&name=" + doNotShield.obj.name;
-                        p.scrolling = "no";
-                        box.parentNode.insertBefore(p, box);
-                      },
-                    });
-                  },
-                });
-              } else {
-                alert("你已经创建Markdown帖子了，不能再创建，请在帖子内修改。");
-              }
-            }
-          }
-        },
-        run: async () => {
-          if (doNotShield.obj.csa == 1) {
-            alert("你目前在测试，无法进行发布哦！只有正式帖才能发布，请刷新网页吧！");
-          } else {
-            try {
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "热门活动") {
-                doNotShield.obj.fq = "17";
-              }
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "积木编程乐园") {
-                doNotShield.obj.fq = "2";
-              }
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "工作室&师徒") {
-                doNotShield.obj.fq = "10";
-              }
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "你问我答") {
-                doNotShield.obj.fq = "5";
-              }
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "神奇代码岛") {
-                doNotShield.obj.fq = "3";
-              }
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "图书馆") {
-                doNotShield.obj.fq = "27";
-              }
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "CoCo应用创作") {
-                doNotShield.obj.fq = "2";
-              }
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "Python乐园") {
-                doNotShield.obj.fq = "11";
-              }
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "源码精灵") {
-                doNotShield.obj.fq = "26";
-              }
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "NOC编程猫比赛") {
-                doNotShield.obj.fq = "13";
-              }
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "灌水池塘") {
-                doNotShield.obj.fq = "7";
-              }
-              if (document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText == "训练师小课堂") {
-                doNotShield.obj.fq = "28";
-              }
-              if (doNotShield.obj.mddata == "带全屏按钮+文本") {
-                doNotShield.obj.lx = "1";
-                doNotShield.obj.lxx = "2";
-              } else {
-                doNotShield.obj.lx = "2";
-                doNotShield.obj.lxx = "3";
-              }
-              doNotShield.obj.ram = Math.ceil(Math.random() * 999999999);
-              doNotShield.obj.gs = new Object();
-              doNotShield.obj.gs.content =
-                '<p style="display:none">' +
-                doNotShield.obj.js +
-                '</p><p><img src="' +
-                doNotShield.obj.banner +
-                '" width="0.1" height="0.1"> <embed type="text/html" src="//bcmcreator.cn/index.php?mod=tz&k=' +
-                doNotShield.obj.lxx +
-                "&bh=" +
-                doNotShield.obj.ram +
-                '" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  style="width:100%;height:' +
-                doNotShield.obj.height +
-                'px; display: block; margin: 0px auto; max-width: 100%;" ></p>';
-              doNotShield.obj.gs.title = doNotShield.obj.name;
-              GM_xmlhttpRequest({
-                url: "https://api.codemao.cn/web/forums/boards/" + doNotShield.obj.fq + "/posts",
-                method: "POST",
-                data: JSON.stringify(doNotShield.obj.gs),
-                headers: {
-                  "Content-type": "application/json;charset=UTF-8",
-                  "User-Agent": "Mozilla/4.0 (compatible; MSIE .0; Windows NT 6.1; Trident/4.0; SLCC2;)",
-                  Host: "api.codemao.cn",
-                  Cookie: document.cookie,
-                },
-                async onload({ response }) {
-                  doNotShield.obj.bcmid = JSON.parse(response).id;
-                  GM_xmlhttpRequest({
-                    method: "get",
-                    url:
-                      "https://api.bcmcreator.cn/MD/bcmFORM.php?name=" +
-                      doNotShield.obj.name +
-                      "&id=" +
-                      doNotShield.obj.id +
-                      "&xjm=" +
-                      doNotShield.obj.xjm +
-                      "&ram=" +
-                      doNotShield.obj.ram +
-                      "&bcmid=" +
-                      doNotShield.obj.bcmid +
-                      "&tx=" +
-                      doNotShield.obj.avatar_url +
-                      "&user=" +
-                      doNotShield.obj.user,
-                    async onload({ response }) {
-                      if (doNotShield.obj.bcmid != undefined) {
-                        window.open("https://shequ.codemao.cn/community/" + doNotShield.obj.bcmid);
-                      } else {
-                        alert("发帖失败，原因是：" + response);
-                      }
-                    },
-                  });
-                },
-              });
-            } catch (err) {
-              alert("请选择发帖分区！");
-            }
-          }
-        },
-        tz: async () => {
-          if (doNotShield.obj.mddata == "带全屏按钮+文本") {
-            doNotShield.obj.lx = "1";
-          } else {
-            doNotShield.obj.lx = "2";
-          }
-          window.open(
-            "https://api.bcmcreator.cn/MD/bcmMD.php?width=" +
-              doNotShield.obj.height +
-              "&title=" +
-              document.getElementsByClassName("r-community-c-forum_sender--title_input")[0].value +
-              "&md=" +
-              doNotShield.obj.xjm +
-              "&k=" +
-              doNotShield.obj.lx +
-              "&id=" +
-              doNotShield.obj.id
-          );
-        },
-        tzid: async () => {
-          if (doNotShield.obj.csa == 1) {
-            alert("你目前在测试，无法进行导入帖子哦！请刷新网页才可以导入！");
-          } else {
-            if (doNotShield.obj.size != "") {
-              GM_xmlhttpRequest({
-                method: "get",
-                url: "https://api.codemao.cn/web/users/details",
-                data: document.cookie,
-                binary: true,
-                async onload({ response }) {
-                  doNotShield.obj.id = JSON.parse(response).id;
-                  GM_xmlhttpRequest({
-                    method: "get",
-                    url: "https://api.bcmcreator.cn/MD/getMD.php?id=" + doNotShield.obj.id + "&lj=" + doNotShield.obj.size.split("{!")[1].split("!}")[0],
-                    binary: true,
-                    async onload({ response }) {
-                      doNotShield.obj.xjm = JSON.parse(response).xjm;
-                      doNotShield.obj.name = JSON.parse(response).name;
-                      document.getElementsByClassName("r-community-c-forum_sender--title_input")[0].value = doNotShield.obj.name;
-                      var p = document.createElement("iframe");
-                      p.height = "1000px";
-                      p.width = "100%";
-                      p.id = "myFrame";
-                      p.src = "https://api.bcmcreator.cn/MD/edit/examples/full.php?id=" + doNotShield.obj.id + "&xjm=" + doNotShield.obj.xjm + "&name=" + doNotShield.obj.name;
-                      p.scrolling = "no";
-                      box.parentNode.insertBefore(p, box);
-                    },
-                  });
-                },
-              });
-            } else {
-              if (doNotShield.obj.tzidc == "") {
-                alert("请输入论坛帖子ID，才能导入进来哦！");
-              } else {
-                GM_xmlhttpRequest({
-                  method: "get",
-                  url: "https://api.codemao.cn/web/users/details",
-                  data: document.cookie,
-                  binary: true,
-                  async onload({ response }) {
-                    doNotShield.obj.id = JSON.parse(response).id;
-                    GM_xmlhttpRequest({
-                      method: "get",
-                      url: "https://api.bcmcreator.cn/MD/getMD.php?id=" + doNotShield.obj.id + "&bcmid=" + doNotShield.obj.tzidc,
-                      binary: true,
-                      async onload({ response }) {
-                        doNotShield.obj.xjm = JSON.parse(response).xjm;
-                        doNotShield.obj.name = JSON.parse(response).name;
-                        document.getElementsByClassName("r-community-c-forum_sender--title_input")[0].value = doNotShield.obj.name;
-                        var p = document.createElement("iframe");
-                        p.height = "1000px";
-                        p.width = "100%";
-                        p.id = "myFrame";
-                        p.src = "https://api.bcmcreator.cn/MD/edit/examples/full.php?id=" + doNotShield.obj.id + "&xjm=" + doNotShield.obj.xjm + "&name=" + doNotShield.obj.name;
-                        p.scrolling = "no";
-                        box.parentNode.insertBefore(p, box);
-                      },
-                    });
-                  },
-                });
-              }
-            }
-          }
-        },
-        cs: async () => {
-          if (doNotShield.obj.csa == 1) {
-            alert("你目前在测试，无法进行发布哦！只有正式帖才能发布，请刷新网页吧！");
-          } else {
-            doNotShield.obj.csa = 1;
-            var p = document.createElement("iframe");
-            p.height = "1000px";
-            p.width = "100%";
-            p.id = "myFrame";
-            p.src = "https://api.bcmcreator.cn/MD/edit/examples/full.php";
-            p.scrolling = "no";
-            box.parentNode.insertBefore(p, box);
-          }
-        },
-      };
-      GM_xmlhttpRequest({
-        method: "get",
-        url: "https://api.codemao.cn/web/users/details",
-        data: document.cookie,
-        binary: true,
-        async onload({ response }) {
-          GM_xmlhttpRequest({
-            method: "get",
-            url: "https://api.bcmcreator.cn/MD/bcmGetMD.php?id=" + JSON.parse(response).id,
-            binary: true,
-            async onload({ response }) {
-              doNotShield.obj.yqtz = JSON.parse(response).data;
-            },
-          });
-        },
-      });
-      document.querySelector("#root > div > div.r-index--main_cont > div > div.r-community--right_search_container > div > div.r-community--search_header > a.r-community--send_btn").addEventListener("click", () => {
-        window.gui = new lil.GUI({ title: "编创协Markdown编辑器" });
-        window.gui.domElement.style.top = "unset";
-        window.gui.domElement.style.bottom = "0";
-        window.gui.domElement.style.userSelect = "none";
-        const first = window.gui.addFolder("初次使用");
-        first.add(doNotShield, "cs").name("[测试]本地Markdown帖子");
-        first.add(doNotShield, "beign").name("正式创建Markdown帖子");
-        const styles = window.gui.addFolder("样式处理");
-        styles.add(doNotShield.obj, "height", 380, 8000).name("帖子高度（px）");
-        styles.add(doNotShield.obj, "mddata", ["带全屏按钮+文本", "纯文本"]).name("帖子类型");
-        styles.add(doNotShield.obj, "banner").name("小banner链接（可空）");
-        styles.add(doNotShield.obj, "js").name("简要介绍（可空,字数<42）");
-        styles.add(doNotShield, "tz").name("预览效果");
-        const send = window.gui.addFolder("发帖按钮");
-        send.add(doNotShield, "run").name("发布帖子");
-        const anaphasis = window.gui.addFolder("后期维护");
-        anaphasis.add(doNotShield.obj, "size", doNotShield.obj.yqtz.split("#￥")).name("已创建");
-        anaphasis.add(doNotShield.obj, "tzidc").name("帖子ID");
-        anaphasis.add(doNotShield, "tzid").name("导入帖子");
-      });
-      document.querySelector("#root > div > div.r-index--main_cont > div > div:nth-child(4) > div > div.c-model_box--content_wrap > div > a").addEventListener("click", () => {
-        window.gui.destroy();
-      });
-    } catch (err) {}
   }
 })();
