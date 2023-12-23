@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.42.258
+// @version      1.43.260
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -39,7 +39,7 @@
   }
   // 感谢刘andy提供的代码awa
   unsafeWindow._dangerouslyOpenNewWindow = unsafeWindow.open;
-  unsafeWindow.open = (url) => {
+  unsafeWindow.openurl = (url) => {
     // console.log("捕获");
     if (url.includes("community") || url.includes("wiki/forum")) {
       // console.log("发现为帖子");
@@ -110,6 +110,7 @@
       return unsafeWindow._dangerouslyOpenNewWindow(url);
     }
   };
+  unsafeWindow.open = unsafeWindow.openurl;
 
   $("head").append(
     `
@@ -476,7 +477,7 @@
                         <input id="md-use" type="checkbox" value="" checked/>
                       </div>
                       <div class="color-sel">
-                        <span>论坛自动翻页（实验性）</span>
+                        <span>论坛自动翻页</span>
                         <input id="auto-turn" type="checkbox" value=""/>
                       </div>
                       <div id="navbar-sett">
@@ -1138,6 +1139,11 @@
             localStorage.setItem("auto-turn", "true");
           } else {
             localStorage.setItem("auto-turn", "");
+            swal("将要刷新页面以保存修改", { buttons: ["取消", "确认"] }).then((value) => {
+              if (value) {
+                window.location.reload();
+              }
+            });
           }
         });
         $("input#md-use").on("change", () => {
@@ -1835,6 +1841,7 @@
           ".c-navigator--cont .c-navigator--item",
           ".r-community-c-forum_sender--select_area span",
           ".r-community--forum_list div li",
+          ".r-community--forum_list2 div li",
           ".r-community--board_item",
           ".r-home-c-work_card--work_card",
           ".r-community--search_container .r-community--my_options .r-community--option",
@@ -1982,6 +1989,7 @@
             },
           });
         }, 1000);
+        let url;
         setInterval(() => {
           try {
             $(".r-home-c-creativityComponent--creativity .r-home-c-creativityComponent--box .r-home-c-creativityComponent--detail .r-home-c-creativityComponent--text-box .r-home-c-creativityComponent--introduction img").attr(
@@ -2027,9 +2035,12 @@
             }
             if (scrollTop + windowHeight >= scrollHeight) {
               try {
-                if (Boolean(localStorage.getItem("auto-turn"))) {
-                  document.documentElement.scrollTop = 0;
+                if (Boolean(localStorage.getItem("auto-turn")) && !document.querySelector("#loading")) {
+                  // document.documentElement.scrollTop = scrollHeight - windowHeight - 10;
                   document.querySelector(".r-community--forum_list .c-pagination--btn.c-pagination--page-container li:last-child").click();
+                  if (!document.querySelector(".r-community--forum_list .c-pagination--btn.c-pagination--page-container li:last-child.c-pagination--nomore")) {
+                    $(".r-community--forum_list2").after("<p class='r-community--loading' id='loading'>加载中</p>");
+                  }
                 }
               } catch (err) {}
             }
@@ -2044,20 +2055,48 @@
               }
             }
           } catch (e) {}
-          if (window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) {
-            // if (document.querySelector(".r-community--forum_list2") == null) {
-            //   $(".r-community--forum_list").after("<div style='display:none' class='r-community--forum_list2'></div>");
-            // }
-            // if (document.querySelector(".r-community--forum_list div:not(div[class])") != null && document.querySelector(".r-community--forum_filter") != null && document.querySelector("#fan") == null) {
-            //   var forum_list = document.querySelectorAll(".r-community--forum_list div:not(div[class])");
-            //   for (i of forum_list) {
-            //     let oCopy = i.cloneNode(true);
-            //     $(".r-community--forum_list2").append(oCopy);
-            //   }
-            //   $(".r-community--forum_list div:not(div[class])").css("display", "none");
-            //   $(".r-community--forum_filter").after(document.querySelector(".r-community--forum_list2").innerHTML);
-            //   $(".r-community--forum_list").append("<div id='fan' class></div>");
-            // }
+          if ((window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) & Boolean(localStorage.getItem("auto-turn"))) {
+            if (document.querySelector(".r-community--forum_list2") == null) {
+              $(".r-community--forum_list").after("<div class='r-community--forum_list2'></div>");
+              url = [];
+            }
+            if (
+              document.querySelector(".r-community--forum_list div:not(div[class])") != null &&
+              (document.querySelector(".r-community--forum_filter") != null || document.querySelector(".r-community--content_my_container") != null) &&
+              (document.querySelector("#fan") == null || document.querySelector(".r-community--content_my_container") != null)
+            ) {
+              if (!document.querySelector(".c-pagination--activePage") || document.querySelector(".c-pagination--activePage").innerHTML == "1") {
+                $(".r-community--forum_list2").empty();
+                url = [];
+              }
+              var forum_list = document.querySelectorAll(".r-community--forum_list div:not(div[class])");
+              for (i of forum_list) {
+                unsafeWindow.geturl = (u) => {
+                  console.log(u);
+                  url.push(u);
+                };
+                unsafeWindow.open = unsafeWindow.geturl;
+                i.querySelector("li").click();
+                let oCopy = i.cloneNode(true);
+                oCopy.querySelector("li").classList.remove("yzf-animate");
+                $(".r-community--forum_list2").append(oCopy);
+              }
+              unsafeWindow.open = unsafeWindow.openurl;
+              console.log(url);
+              $(".r-community--forum_list div:not(div[class])").css("display", "none").addClass("dec");
+              for (i = 0; i < document.querySelectorAll(".r-community--forum_list2 div:not(div[class]) li").length; i++) {
+                let onurl = url[i];
+                document.querySelectorAll(".r-community--forum_list2 div:not(div[class]) li")[i].onclick = () => {
+                  unsafeWindow.open(onurl);
+                  console.log(onurl);
+                };
+              }
+              if (Boolean(localStorage.getItem("auto-turn"))) {
+                $(".r-community--page_contianer").hide();
+              }
+              $(".r-community--forum_list").append("<div id='fan' class></div>");
+              $("#loading").remove();
+            }
           }
           if (window.location.href.indexOf("/message") != -1) {
             scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
