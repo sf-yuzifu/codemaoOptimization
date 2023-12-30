@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.43.261
+// @version      1.45.265
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -37,11 +37,13 @@
       document.querySelector("title").innerHTML = content;
     }
   }
+  // 白名单
+  let whiteList = ["box3.codemao.cn", "pickduck.cn", "shequ.codemao.cn", "player.codemao.cn", "static.yuzifu.top", "blog.yzf.moe", "player.bilibili.com", "bcmcreator.cn"];
   // 感谢刘andy提供的代码awa
   unsafeWindow._dangerouslyOpenNewWindow = unsafeWindow.open;
   unsafeWindow.openurl = (url) => {
     // console.log("捕获");
-    if (url.includes("community") || url.includes("wiki/forum")) {
+    if ((url.includes("community") || url.includes("wiki/forum")) && (parseInt(url.split("/")[2]) || parseInt(url.split("/")[3]))) {
       // console.log("发现为帖子");
       let id = "";
       if (url.includes("community")) {
@@ -49,7 +51,7 @@
       } else {
         id = url.split("/")[3];
       }
-      console.log(id);
+      // console.log(id);
       $.ajax({
         type: "GET",
         url: `https://api.codemao.cn/web/forums/posts/${id}/details`,
@@ -59,30 +61,81 @@
           withCredentials: true,
         },
         success: function (obj) {
-          // console.log(obj.content.toLowerCase());
-          if (obj.content.toLowerCase().includes("</iframe>") || obj.content.toLowerCase().includes("</embed>") || obj.content.toLowerCase().includes("<iframe") || obj.content.toLowerCase().includes("<embed")) {
-            swal({
-              title: "危险",
-              text: "即将访问的帖子存在风险！",
-              icon: "error",
-              dangerMode: true,
-              buttons: { visit: "继续访问(不推荐)", danger: "立即退出(推荐)" },
-            }).then((x) => {
-              if (x == "visit") {
-                swal({
-                  title: "警告",
-                  text: "您真的要继续访问吗？",
-                  dangerMode: true,
-                  buttons: { visit: "继续访问(不推荐)", danger: "立即退出(推荐)" },
-                }).then((x) => {
-                  if (x == "visit") {
-                    return unsafeWindow._dangerouslyOpenNewWindow(url);
-                  }
-                  return null;
-                });
+          let a = document.createElement("div");
+          a.innerHTML = obj.content;
+          // console.log(a);
+          if (a.querySelector("iframe,embed")) {
+            for (let i of a.querySelectorAll("iframe,embed")) {
+              // console.log(i.getAttribute("src"), tldjs.parse(i.getAttribute("src")).hostname);
+              if (i.getAttribute("src") && !whiteList.includes(tldjs.parse(i.getAttribute("src")).hostname)) {
+                if (i.getAttribute("src").includes("https://static.codemao.cn/yuque/preview/")) {
+                  $.ajax({
+                    type: "GET",
+                    url: i.getAttribute("src"),
+                    async: true,
+                    success: function (obj) {
+                      let a = document.createElement("div");
+                      a.innerHTML = obj;
+                      if (a.querySelector("script:not(script[src])").innerHTML.includes("viewer.setDocument")) {
+                        return unsafeWindow._dangerouslyOpenNewWindow(url);
+                      } else {
+                        swal({
+                          title: "危险",
+                          text: "即将访问的帖子存在风险！",
+                          icon: "error",
+                          dangerMode: true,
+                          buttons: { visit: "继续访问(不推荐)", danger: "立即退出(推荐)" },
+                        }).then((x) => {
+                          if (x == "visit") {
+                            swal({
+                              title: "警告",
+                              text: "您真的要继续访问吗？",
+                              dangerMode: true,
+                              buttons: { visit: "继续访问(不推荐)", danger: "立即退出(推荐)" },
+                            }).then((x) => {
+                              if (x == "visit") {
+                                return unsafeWindow._dangerouslyOpenNewWindow(url);
+                              }
+                              return null;
+                            });
+                            document.querySelector(".swal-button-container:last-child button").focus();
+                          }
+                          return null;
+                        });
+                        document.querySelector(".swal-button-container:last-child button").focus();
+                      }
+                    },
+                  });
+                } else {
+                  swal({
+                    title: "危险",
+                    text: "即将访问的帖子存在风险！",
+                    icon: "error",
+                    dangerMode: true,
+                    buttons: { visit: "继续访问(不推荐)", danger: "立即退出(推荐)" },
+                  }).then((x) => {
+                    if (x == "visit") {
+                      swal({
+                        title: "警告",
+                        text: "您真的要继续访问吗？",
+                        dangerMode: true,
+                        buttons: { visit: "继续访问(不推荐)", danger: "立即退出(推荐)" },
+                      }).then((x) => {
+                        if (x == "visit") {
+                          return unsafeWindow._dangerouslyOpenNewWindow(url);
+                        }
+                        return null;
+                      });
+                      document.querySelector(".swal-button-container:last-child button").focus();
+                    }
+                    return null;
+                  });
+                  document.querySelector(".swal-button-container:last-child button").focus();
+                }
+              } else {
+                return unsafeWindow._dangerouslyOpenNewWindow(url);
               }
-              return null;
-            });
+            }
           } else {
             return unsafeWindow._dangerouslyOpenNewWindow(url);
           }
@@ -92,12 +145,10 @@
             title: "警告",
             text: "无法甄别即将访问的帖子是否危险！",
             icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "暂不访问",
-            cancelButtonText: "继续访问",
+            buttons: { visit: "暂不访问", danger: "继续访问" },
             closeOnClickOutside: false,
           }).then((x) => {
-            if (x != true) {
+            if (x == "danger") {
               return unsafeWindow._dangerouslyOpenNewWindow(url);
             }
             return null;
@@ -123,8 +174,6 @@
     $("head").append(`<meta name="theme-color" content="">`);
   }
   setInterval(() => {
-    // 白名单
-    let whiteList = ["box3.codemao.cn", "pickduck.cn", "shequ.codemao.cn", "player.codemao.cn", "static.yuzifu.top"];
     //尝试制作防劫持
     if (
       window.location.href.indexOf("message") != -1 ||
@@ -143,7 +192,7 @@
       }
       var embeds = document.querySelectorAll("embed");
       for (i = 0; i < embeds.length; i++) {
-        if (!whiteList.includes(tldjs.getDomain(iframes[i].getAttribute("src")))) {
+        if (!whiteList.includes(tldjs.getDomain(embeds[i].getAttribute("src")))) {
           var embed_to_iframe = document.createElement("iframe");
           embed_to_iframe.style.width = embeds[i].style.width;
           embed_to_iframe.style.height = embeds[i].style.height;
@@ -336,6 +385,83 @@
       }
       if (window.location.href.indexOf("setting") != -1) {
         titleChange("设置 | 编程猫社区");
+        if (!document.querySelector(".r-setting-component-set_avatar--upload_link.upload")) {
+          $(".r-setting-component-set_avatar--upload_link").after(document.querySelector(".r-setting-component-set_avatar--upload_link").cloneNode(true)).remove();
+          $(".r-setting-component-set_avatar--upload_link").addClass("upload");
+          $(".r-setting-component-set_avatar--btn_save").after(document.querySelector(".r-setting-component-set_avatar--btn_save").cloneNode(true)).remove();
+          $(".r-setting-component-set_avatar--btn_save").addClass("upload");
+          document.querySelector(".r-setting-component-set_avatar--upload_link.upload").onclick = () => {
+            var e = document.createElement("input");
+            e.setAttribute("type", "file");
+            e.addEventListener("change", function (e) {
+              var n = e.target.files[0];
+              document.querySelector(".r-setting-component-set_avatar--left_area_container .r-setting-component-set_avatar--my_avatar").style.backgroundImage = `url(${upload(n)})`;
+            });
+            e.click();
+          };
+          document.querySelector(".r-setting-component-set_avatar--btn_save.upload").onclick = () => {
+            let url = document.querySelector(".r-setting-component-set_avatar--left_area_container .r-setting-component-set_avatar--my_avatar").style.backgroundImage;
+            url = url.includes('"') ? url.replace('url("', "").replace('")', "") : url.replace("url(", "").replace(")", "");
+            $.ajax({
+              type: "PATCH",
+              url: "https://api.codemao.cn/tiger/v3/web/accounts/info",
+              contentType: "application/json;charset=UTF-8",
+              data: JSON.stringify({
+                avatar_url: url,
+              }),
+              dataType: "json",
+              xhrFields: {
+                withCredentials: true,
+              },
+              success: function () {
+                document.querySelector(".c-model_box--dialog_wrap .c-model_box--content_box .c-model_box--close").click();
+                document.querySelector(".r-setting--setting_form .r-setting--form_item .r-setting--head_icon").style.backgroundImage = `url(${url})`;
+                document.querySelector(".c-navigator--header-content .c-navigator--user_wrap .c-navigator--avatar").style.backgroundImage = `url(${url})`;
+                window.location.reload();
+              },
+              error: function (res) {
+                alert("失败");
+                console.log(res.responseJSON);
+              },
+            });
+          };
+        }
+      }
+
+      function upload(file) {
+        let url, fn, token, key, upload_url;
+        fn = "avatar";
+        $.ajax({
+          type: "GET",
+          url: "https://oversea-api.code.game/tiger/kitten/cdn/token/1?prefix=avatar&bucket=static",
+          contentType: "application/json;charset=UTF-8",
+          async: false,
+          xhrFields: {
+            withCredentials: true,
+          },
+          success: function (res) {
+            upload_url = res.bucket_url;
+            token = res["data"][0]["token"];
+            key = res["data"][0]["filename"];
+          },
+        });
+        var formData = new FormData();
+        formData.append("token", token);
+        formData.append("key", key);
+        formData.append("fname", fn);
+        formData.append("file", file);
+        $.ajax({
+          type: "POST",
+          url: "https://upload.qiniup.com/",
+          async: false,
+          contentType: false,
+          processData: false,
+          data: formData,
+          success: function (res) {
+            url = "/" + res.key;
+          },
+        });
+        return encodeURI(upload_url + url);
       }
       if (window.location.href.indexOf("course") != -1) {
         titleChange("课程 | 编程猫社区");
@@ -1899,92 +2025,98 @@
                 $("li[data-watch_event='消息-系统'] a .c-navigator--reply_count").css("display", "none");
                 $(".c-navigator--message span").css("display", "none");
               } catch (error) {}
-              if (JSON.parse(response)[0].count == 0) {
-                if (document.querySelector("li[data-watch_event='消息-评论'] a .c-navigator--reply_count")) {
-                  $("li[data-watch_event='消息-评论'] a .c-navigator--reply_count").css("display", "none");
-                } else if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb")) {
-                  $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb").css("display", "none");
-                }
-              } else {
-                if (document.querySelector("li[data-watch_event='消息-评论'] a .c-navigator--reply_count")) {
-                  $("li[data-watch_event='消息-评论'] a .c-navigator--reply_count:first-child").css("display", "");
-                  document.querySelector("li[data-watch_event='消息-评论'] a .c-navigator--reply_count").innerHTML = `(${JSON.parse(response)[0].count})`;
+              if (JSON.parse(response)[0]) {
+                if (JSON.parse(response)[0].count == 0) {
+                  if (document.querySelector("li[data-watch_event='消息-评论'] a .c-navigator--reply_count")) {
+                    $("li[data-watch_event='消息-评论'] a .c-navigator--reply_count").css("display", "none");
+                  } else if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb")) {
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb").css("display", "none");
+                  }
                 } else {
-                  $("li[data-watch_event='消息-评论'] a").append(`<span class='c-navigator--reply_count'>(${JSON.parse(response)[0].count})</span>`);
+                  if (document.querySelector("li[data-watch_event='消息-评论'] a .c-navigator--reply_count")) {
+                    $("li[data-watch_event='消息-评论'] a .c-navigator--reply_count:first-child").css("display", "");
+                    document.querySelector("li[data-watch_event='消息-评论'] a .c-navigator--reply_count").innerHTML = `(${JSON.parse(response)[0].count})`;
+                  } else {
+                    $("li[data-watch_event='消息-评论'] a").append(`<span class='c-navigator--reply_count'>(${JSON.parse(response)[0].count})</span>`);
+                  }
+                  if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb")) {
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] a span.index__reply_count___1nqAb:nth-child(2)").css("display", "");
+                    document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb").innerHTML = `(${JSON.parse(response)[0].count})`;
+                  } else {
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] a").append(`<span class='index__reply_count___1nqAb'>(${JSON.parse(response)[0].count})</span>`);
+                  }
                 }
-                if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb")) {
-                  $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] a span.index__reply_count___1nqAb:nth-child(2)").css("display", "");
-                  document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb").innerHTML = `(${JSON.parse(response)[0].count})`;
+                if (JSON.parse(response)[1].count == 0) {
+                  if (document.querySelector("li[data-watch_event='消息-赞'] a .c-navigator--reply_count")) {
+                    $("li[data-watch_event='消息-赞'] a .c-navigator--reply_count").css("display", "none");
+                  } else if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb")) {
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb").css("display", "none");
+                  }
                 } else {
-                  $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] a").append(`<span class='index__reply_count___1nqAb'>(${JSON.parse(response)[0].count})</span>`);
+                  if (document.querySelector("li[data-watch_event='消息-赞'] a .c-navigator--reply_count")) {
+                    $("li[data-watch_event='消息-赞'] a .c-navigator--reply_count:first-child").css("display", "");
+                    document.querySelector("li[data-watch_event='消息-赞'] a .c-navigator--reply_count").innerHTML = `(${JSON.parse(response)[1].count})`;
+                  } else {
+                    $("li[data-watch_event='消息-赞'] a").append(`<span class='c-navigator--reply_count'>(${JSON.parse(response)[1].count})</span>`);
+                  }
+                  if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb")) {
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] a span.index__reply_count___1nqAb:nth-child(2)").css("display", "");
+                    document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb").innerHTML = `(${JSON.parse(response)[1].count})`;
+                  } else {
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] a").append(`<span class='index__reply_count___1nqAb'>(${JSON.parse(response)[1].count})</span>`);
+                  }
                 }
-              }
-              if (JSON.parse(response)[1].count == 0) {
-                if (document.querySelector("li[data-watch_event='消息-赞'] a .c-navigator--reply_count")) {
-                  $("li[data-watch_event='消息-赞'] a .c-navigator--reply_count").css("display", "none");
-                } else if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb")) {
-                  $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb").css("display", "none");
-                }
-              } else {
-                if (document.querySelector("li[data-watch_event='消息-赞'] a .c-navigator--reply_count")) {
-                  $("li[data-watch_event='消息-赞'] a .c-navigator--reply_count:first-child").css("display", "");
-                  document.querySelector("li[data-watch_event='消息-赞'] a .c-navigator--reply_count").innerHTML = `(${JSON.parse(response)[1].count})`;
+                if (JSON.parse(response)[2].count == 0) {
+                  if (document.querySelector("li[data-watch_event='消息-系统'] a .c-navigator--reply_count")) {
+                    $("li[data-watch_event='消息-系统'] a .c-navigator--reply_count").css("display", "none");
+                  } else if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb")) {
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb").css("display", "none");
+                  }
                 } else {
-                  $("li[data-watch_event='消息-赞'] a").append(`<span class='c-navigator--reply_count'>(${JSON.parse(response)[1].count})</span>`);
+                  if (document.querySelector("li[data-watch_event='消息-系统'] a .c-navigator--reply_count")) {
+                    $("li[data-watch_event='消息-系统'] a .c-navigator--reply_count:first-child").css("display", "");
+                    document.querySelector("li[data-watch_event='消息-系统'] a .c-navigator--reply_count").innerHTML = `(${JSON.parse(response)[2].count})`;
+                  } else {
+                    $("li[data-watch_event='消息-系统'] a").append(`<span class='c-navigator--reply_count'>(${JSON.parse(response)[2].count})</span>`);
+                  }
+                  if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb")) {
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] a span.index__reply_count___1nqAb:nth-child(2)").css("display", "");
+                    document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb").innerHTML = `(${JSON.parse(response)[2].count})`;
+                  } else {
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] a").append(`<span class='index__reply_count___1nqAb'>(${JSON.parse(response)[2].count})</span>`);
+                  }
                 }
-                if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb")) {
-                  $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] a span.index__reply_count___1nqAb:nth-child(2)").css("display", "");
-                  document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb").innerHTML = `(${JSON.parse(response)[1].count})`;
+                if (JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count == 0) {
+                  if (document.querySelector(".c-navigator--message span")) {
+                    $(".c-navigator--message span").css("display", "none");
+                  } else if (document.querySelector(".index__user_wrap___11XZU .index__message___3tAMD span")) {
+                    $(".index__user_wrap___11XZU .index__message___3tAMD span").css("display", "none");
+                  }
                 } else {
-                  $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] a").append(`<span class='index__reply_count___1nqAb'>(${JSON.parse(response)[1].count})</span>`);
-                }
-              }
-              if (JSON.parse(response)[2].count == 0) {
-                if (document.querySelector("li[data-watch_event='消息-系统'] a .c-navigator--reply_count")) {
-                  $("li[data-watch_event='消息-系统'] a .c-navigator--reply_count").css("display", "none");
-                } else if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb")) {
-                  $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb").css("display", "none");
-                }
-              } else {
-                if (document.querySelector("li[data-watch_event='消息-系统'] a .c-navigator--reply_count")) {
-                  $("li[data-watch_event='消息-系统'] a .c-navigator--reply_count:first-child").css("display", "");
-                  document.querySelector("li[data-watch_event='消息-系统'] a .c-navigator--reply_count").innerHTML = `(${JSON.parse(response)[2].count})`;
-                } else {
-                  $("li[data-watch_event='消息-系统'] a").append(`<span class='c-navigator--reply_count'>(${JSON.parse(response)[2].count})</span>`);
-                }
-                if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb")) {
-                  $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] a span.index__reply_count___1nqAb:nth-child(2)").css("display", "");
-                  document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb").innerHTML = `(${JSON.parse(response)[2].count})`;
-                } else {
-                  $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] a").append(`<span class='index__reply_count___1nqAb'>(${JSON.parse(response)[2].count})</span>`);
-                }
-              }
-              if (JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count == 0) {
-                if (document.querySelector(".c-navigator--message span")) {
-                  $(".c-navigator--message span").css("display", "none");
-                } else if (document.querySelector(".index__user_wrap___11XZU .index__message___3tAMD span")) {
-                  $(".index__user_wrap___11XZU .index__message___3tAMD span").css("display", "none");
-                }
-              } else {
-                if (document.querySelector(".c-navigator--message span")) {
-                  $(".c-navigator--message span:first-child").css("display", "");
-                  document.querySelector(".c-navigator--message span").innerHTML = `${
-                    JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count
-                  }`;
-                } else {
-                  $(".c-navigator--message").append(
-                    `<span>${JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count}</span>`
-                  );
-                }
-                if (document.querySelector(".index__user_wrap___11XZU .index__message___3tAMD span")) {
-                  $(".index__user_wrap___11XZU .index__message___3tAMD span:first-child").css("display", "");
-                  document.querySelector(".index__user_wrap___11XZU .index__message___3tAMD span").innerHTML = `${
-                    JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count
-                  }`;
-                } else {
-                  $(".index__user_wrap___11XZU .index__message___3tAMD").append(
-                    `<span>${JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count}</span>`
-                  );
+                  if (document.querySelector(".c-navigator--message span")) {
+                    $(".c-navigator--message span:first-child").css("display", "");
+                    document.querySelector(".c-navigator--message span").innerHTML = `${
+                      JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count
+                    }`;
+                  } else {
+                    $(".c-navigator--message").append(
+                      `<span>${
+                        JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count
+                      }</span>`
+                    );
+                  }
+                  if (document.querySelector(".index__user_wrap___11XZU .index__message___3tAMD span")) {
+                    $(".index__user_wrap___11XZU .index__message___3tAMD span:first-child").css("display", "");
+                    document.querySelector(".index__user_wrap___11XZU .index__message___3tAMD span").innerHTML = `${
+                      JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count
+                    }`;
+                  } else {
+                    $(".index__user_wrap___11XZU .index__message___3tAMD").append(
+                      `<span>${
+                        JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count
+                      }</span>`
+                    );
+                  }
                 }
               }
             },
@@ -2026,6 +2158,9 @@
           ) {
             if (Boolean(localStorage.getItem("md-use")) && document.getElementsByClassName("r-community-c-forum_sender--option")[0].style.display != "none") {
               bcm_markdown();
+            }
+            if (Boolean(localStorage.getItem("md-use"))) {
+              $(".forum_editor .mce-tinymce.mce-container.mce-panel").hide();
             }
             var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
             var windowHeight = document.documentElement.clientHeight || document.body.clientHeight;
@@ -2073,7 +2208,7 @@
               var forum_list = document.querySelectorAll(".r-community--forum_list div:not(div[class])");
               for (i of forum_list) {
                 unsafeWindow.geturl = (u) => {
-                  console.log(u);
+                  // console.log(u);
                   url.push(u);
                 };
                 unsafeWindow.open = unsafeWindow.geturl;
@@ -2083,13 +2218,13 @@
                 $(".r-community--forum_list2").append(oCopy);
               }
               unsafeWindow.open = unsafeWindow.openurl;
-              console.log(url);
+              // console.log(url);
               $(".r-community--forum_list div:not(div[class])").css("display", "none").addClass("dec");
               for (i = 0; i < document.querySelectorAll(".r-community--forum_list2 div:not(div[class]) li").length; i++) {
                 let onurl = url[i];
                 document.querySelectorAll(".r-community--forum_list2 div:not(div[class]) li")[i].onclick = () => {
                   unsafeWindow.open(onurl);
-                  console.log(onurl);
+                  // console.log(onurl);
                 };
               }
               if (Boolean(localStorage.getItem("auto-turn"))) {
@@ -2982,7 +3117,6 @@
     if (document.querySelector(".forum_editor:not(.ne-doc-major-editor)")) {
       document.querySelector(".forum_editor").classList.add("ne-doc-major-editor");
       $(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").after($(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").clone(true).addClass("yuque-sender")).hide();
-      $(".forum_editor .mce-tinymce.mce-container.mce-panel").hide();
       $(".forum_editor").append(`<iframe style="width:100%;height:100%;" id="yuque" src="https://static.codemao.cn/coco/player/unstable/SykHjpiga.text/html"></iframe>`);
       $("body").append(`<iframe id="preview" src="" style="width: 100%; height: 100%; z-index: -1; position: fixed;"></iframe>`);
       document.querySelector(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option.yuque-sender").onclick = async (e) => {
