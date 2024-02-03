@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.45.265
+// @version      1.45.266
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -68,7 +68,7 @@
             for (let i of a.querySelectorAll("iframe,embed")) {
               // console.log(i.getAttribute("src"), tldjs.parse(i.getAttribute("src")).hostname);
               if (i.getAttribute("src") && !whiteList.includes(tldjs.parse(i.getAttribute("src")).hostname)) {
-                if (i.getAttribute("src").includes("https://static.codemao.cn/yuque/preview/")) {
+                if (i.getAttribute("src").indexOf("https://static.codemao.cn/yuque/preview/") === 0) {
                   $.ajax({
                     type: "GET",
                     url: i.getAttribute("src"),
