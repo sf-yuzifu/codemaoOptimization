@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.45.266
+// @version      1.45.268
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -319,7 +319,7 @@
                                     text: "这个作品你投过了吧？",
                                     icon: "error",
                                   });
-                                  console.log(res.responseJSON);
+                                  // console.log(res.responseJSON);
                                 },
                               });
                             },
@@ -372,6 +372,8 @@
             web = "https://coco.codemao.cn/editor/player/";
           } else if (workType == "海龟编辑器") {
             web = "https://turtle.codemao.cn/?entry=sharing&channel_type=community&action=open_published_project&work_id=";
+          } else if (workType == "KittenN编辑器") {
+            web = "https://kn.codemao.cn/player?workId=";
           }
           $(".r-work-c-player--work_player_container .r-work-c-player--player_container.r-work-c-player--fullscreen iframe").css("height", "100%");
           if (!document.querySelector(".c-virtual_player--virtual_player").getElementsByTagName("iframe")[0]) {
@@ -421,7 +423,7 @@
               },
               error: function (res) {
                 alert("失败");
-                console.log(res.responseJSON);
+                // console.log(res.responseJSON);
               },
             });
           };
@@ -663,7 +665,7 @@
                   ws.send(sendobj);
 
                   ws.onmessage = function (e) {
-                    console.log(JSON.parse(e.data).status);
+                    // console.log(JSON.parse(e.data).status);
                     if (!document.querySelector(".user-status") && JSON.parse(e.data).status !== "未知") {
                       $(".r-user-c-banner--banner .r-user-c-banner--background .r-user-c-banner--container .r-user-c-banner--photo img").before("<div class='user-status'></div>");
                     }
@@ -680,16 +682,16 @@
                   };
                 }
               }, 1000);
-              console.log("Connection open ...");
+              // console.log("Connection open ...");
             };
 
             ws.onclose = function (evt) {
-              console.log("Connection closed.");
+              // console.log("Connection closed.");
               clearInterval(wsHeart);
             };
 
             ws.onerror = function (err) {
-              console.log(err);
+              // console.log(err);
             };
           } else if (user_id !== localStorage.getItem("user_id")) {
             if (ws) {
@@ -1380,7 +1382,7 @@
         let junkContent = [];
 
         function afterGetJunk(workid) {
-          console.log(junkComment, junkCommentID);
+          // console.log(junkComment, junkCommentID);
           let junkCommentTotal = document.createElement("div");
           junkCommentTotal.style = `
             max-height: 400px;
@@ -1408,7 +1410,7 @@
                 junkCommentID.splice(junkCommentID.indexOf(parseInt(this.value)), 1);
               }
               junkComment = junkCommentID.length;
-              console.log(junkCommentID);
+              // console.log(junkCommentID);
             };
             junkCommentTotal.appendChild(ccc);
           }
@@ -1458,7 +1460,7 @@
                         text: res.responseJSON.error_message,
                         icon: "error",
                       });
-                      console.log(res.responseJSON);
+                      // console.log(res.responseJSON);
                       fail = 1;
                     }
                   },
@@ -1531,7 +1533,7 @@
                 text: res.responseJSON.error_message,
                 icon: "error",
               });
-              console.log(res.responseJSON);
+              // console.log(res.responseJSON);
             },
           });
         }
@@ -1868,7 +1870,7 @@
                           text: res.responseJSON.error_message,
                           icon: "error",
                         });
-                        console.log(res.responseJSON);
+                        // console.log(res.responseJSON);
                       },
                     });
                   }
@@ -3153,7 +3155,7 @@
           window.addEventListener(
             "message",
             (e) => {
-              console.log(e.data);
+              // console.log(e.data);
               if (typeof e.data === "number") {
                 let content = `
                   <p style="display:none"></p>
@@ -3174,7 +3176,7 @@
                     Cookie: document.cookie,
                   },
                   async onload({ response }) {
-                    console.log(JSON.parse(response).id);
+                    // console.log(JSON.parse(response).id);
                     window.open("https://shequ.codemao.cn/community/" + JSON.parse(response).id);
                   },
                 });
@@ -3270,7 +3272,7 @@
                   },
                 });
                 trueURL = encodeURI(upload_url + url);
-                console.log(trueURL);
+                // console.log(trueURL);
                 $("#preview").attr("src", encodeURI(upload_url + url));
                 if (document.querySelector("#preview").attachEvent) {
                   document.querySelector("#preview").attachEvent("onload", function () {
