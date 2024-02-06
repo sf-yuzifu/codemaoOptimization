@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.45.268
+// @version      1.46.270
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -16,6 +16,13 @@
 // @license      616 SB License
 
 // ==/UserScript==
+let oldFnOpen = XMLHttpRequest.prototype.open;
+XMLHttpRequest.prototype.open = function () {
+  if (arguments[1].includes("hidden_status")) {
+    return oldFnOpen.apply();
+  }
+  return oldFnOpen.apply(this, arguments);
+};
 
 (function () {
   "use strict";
