@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.46.271
+// @version      1.46.272
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -831,7 +831,8 @@ XMLHttpRequest.prototype.open = function () {
                   .r-course--course_cont,
                   .r-user--user-module, .r-user--user-module .r-user--user-contarner,
                   .r-message--container,
-                  .app__content___3n_ce
+                  .app__content___3n_ce,
+                  .c-logout--container
                  {
                       background:#000!important;
                   }
@@ -935,7 +936,9 @@ XMLHttpRequest.prototype.open = function () {
                   .index__novel-chapter-box___1TNT2 .index__novel-brief-tit___cmfnj,
                   .index__chapter-title___1Pnoq, .index__comment-title___cOqiM,
                   .r-work_shop-r-manage-c-edit_workshop_info--edit_wrap header .r-work_shop-r-manage-c-edit_workshop_info--title,
-                  .r-work_shop-r-manage-c-workshop_info_editor--item_name
+                  .r-work_shop-r-manage-c-workshop_info_editor--item_name,
+                  .c-logout--content p,
+                  .c-dialog-c-sign_box--main_content .c-dialog-c-sign_box--tap_cont .c-dialog-c-sign_box--item
                   {
                       color:#fff!important
                   }
@@ -995,7 +998,10 @@ XMLHttpRequest.prototype.open = function () {
                   .r-work_shop-r-manage--manage_workshop_container .r-work_shop-r-manage--sidebar .r-work_shop-r-manage--sidebar_item,
                   .r-work_shop-r-details-component-project_dialog--item:not(.r-work_shop-r-details-component-project_dialog--item:hover) .r-work_shop-r-details-component-project_dialog--item_name,
                   .r-work-c-coll_user_info--container .r-work-c-coll_user_info--coll_user_list_container .r-work-c-coll_user_info--coll_user_list_title,
-                  .r-work-c-coll_user_info--container .r-work-c-coll_user_info--coll_user_list_container .r-work-c-coll_user_info--coll_user_list .r-work-c-coll_user_info--coll_user_item .r-work-c-coll_user_info--coll_user_wrap .r-work-c-coll_user_info--coll_user_name
+                  .r-work-c-coll_user_info--container .r-work-c-coll_user_info--coll_user_list_container .r-work-c-coll_user_info--coll_user_list .r-work-c-coll_user_info--coll_user_item .r-work-c-coll_user_info--coll_user_wrap .r-work-c-coll_user_info--coll_user_name,
+                  .c-logout--content p a,
+                  .commons-styles--agree_cont,
+                  .commons-styles--agree_cont a
                   {
                       color:#fffa!important
                   }
@@ -1111,7 +1117,11 @@ XMLHttpRequest.prototype.open = function () {
                   .r-work_shop-r-manage-c-edit_workshop_info--edit_wrap,
                   .r-work_shop-r-manage-c-manage_staff--member_list_wrap .r-work_shop-r-manage-c-manage_staff--member_list .r-work_shop-r-manage-c-manage_staff--member,
                   .r-work_shop-r-manage--manage_workshop_container .r-work_shop-r-manage--sidebar,
-                  .r-work-c-coll_user_info--container
+                  .r-work-c-coll_user_info--container,
+                  .c-logout--content,
+                  .c-dialog-c-sign_box--main_content,
+                  .commons-styles--input.commons-styles--input-focus, .commons-styles--input.commons-styles--input-yanzhengCode.commons-styles--input-focus, .commons-styles--input:focus,
+                  .commons-styles--input
                   {
                       background:#525252 !important;
                       color:#fff !important
@@ -1151,13 +1161,17 @@ XMLHttpRequest.prototype.open = function () {
                   .r-community--forum_filter .r-community--filter_tab,
                   input::-webkit-input-placeholder,
                   .r-community-r-detail--comment_sender .r-community-r-detail--sender_container .r-community-r-detail--options .r-community-r-detail--roules_btn,
-                  .index__novel-recommend-item___1HYuh .index__novel-recommend-des___2FiVu{
+                  .index__novel-recommend-item___1HYuh .index__novel-recommend-des___2FiVu,
+                  .r-user-c-bad--bad .r-user-c-bad--bad1,
+                  .commons-styles--forget, .commons-styles--login-option a
+                  {
                       color: #fffa!important;
                   }
                   .r-community--forum_filter .r-community--filter_tab,
                   .r-community--search_form input,
                   .c-post_list--post_body,
-                  .r-mall-r-home--search_form input{
+                  .r-mall-r-home--search_form input,
+                  .r-user-c-bad--bad {
                       background:#525252 !important;
                   }
                   .r-work_shop--bottom_cont{
@@ -1184,7 +1198,8 @@ XMLHttpRequest.prototype.open = function () {
                   .r-user-r-main--content,
                   .c-model_box--dialog_wrap .c-model_box--content_box .c-model_box--title,
                   .forum_editor .mce-tinymce.mce-container.mce-panel,
-                  .r-setting--main_area .r-setting--setting_classes
+                  .r-setting--main_area .r-setting--setting_classes,
+                  .c-dialog-c-sign_box--main_content .c-dialog-c-sign_box--tap_cont
                   {
                       border-color:#666666!important
                   }
@@ -1203,7 +1218,9 @@ XMLHttpRequest.prototype.open = function () {
                   .r-community--forum_filter .r-community--filter_tab.r-community--active span,
                   .r-message--container .r-message--nav_item.r-message--cur_nav:after,
                   .r-work_shop-r-details--details_wrap .r-work_shop-r-details--header_cont .r-work_shop-r-details--nav_cont .r-work_shop-r-details--nav.r-work_shop-r-details--select:after,
-                  .r-gallery-r-detail--container .r-gallery-r-detail--nav_wrap .r-gallery-r-detail--nav_cont ul li.r-gallery-r-detail--select:after{
+                  .r-gallery-r-detail--container .r-gallery-r-detail--nav_wrap .r-gallery-r-detail--nav_cont ul li.r-gallery-r-detail--select:after,
+                  .c-dialog-c-sign_box--main_content .c-dialog-c-sign_box--tap_cont .c-dialog-c-sign_box--item.c-dialog-c-sign_box--select:after
+                  {
                       background-color:#fff!important
                   }
                   .r-user-c-banner--banner .r-user-c-banner--nav-box ul p.r-user-c-banner--active span{
@@ -1244,7 +1261,8 @@ XMLHttpRequest.prototype.open = function () {
                   }
                   .r-work_manager--work_manager_wrap .r-work_manager--content_wrap .r-work_manager--content_container .r-work_manager--content .r-work_manager--blank_content .r-work_manager--wrap .r-work_manager--empty_img,
                   .r-work_shop-r-manage-c-check_apply--apply_wrap .r-work_shop-r-manage-c-check_apply--apply_list .r-work_shop-r-manage-c-check_apply--no_apply_wrap .r-work_shop-r-manage-c-check_apply--no_apply_img,
-                  .r-work_shop-r-details-component-project_dialog--empty .r-work_shop-r-details-component-project_dialog--empty_img{
+                  .r-work_shop-r-details-component-project_dialog--empty .r-work_shop-r-details-component-project_dialog--empty_img,
+                  .r-user-c-bad--bad .r-user-c-bad--background {
                       filter: invert(0.68);
                   }
                   </style>
