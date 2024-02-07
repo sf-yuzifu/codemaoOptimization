@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.46.273
+// @version      1.46.274
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -668,7 +668,7 @@ XMLHttpRequest.prototype.open = function () {
           if (!ws) {
             user_id = localStorage.getItem("user_id");
 
-            ws = new WebSocket(`wss://online.214545666.repl.co?id=${localStorage.getItem("user_id")}`);
+            ws = new WebSocket(`wss://7c364134-d8e2-4b58-9567-7ca3847e4534-00-o9h3cgt860l2.pike.replit.dev/?id=${localStorage.getItem("user_id")}`);
             ws.onopen = function (evt) {
               wsHeart = setInterval(() => {
                 let sendobj = JSON.stringify({
