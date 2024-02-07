@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.46.270
+// @version      1.46.271
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -271,6 +271,9 @@ XMLHttpRequest.prototype.open = function () {
                         case 8:
                           type = "Nemo";
                           break;
+                        case 15:
+                          type = "KittenN";
+                          break;
                         default:
                           type = "";
                           break;
@@ -321,11 +324,20 @@ XMLHttpRequest.prototype.open = function () {
                                   });
                                 },
                                 error: function (res) {
-                                  swal({
-                                    title: "错误",
-                                    text: "这个作品你投过了吧？",
-                                    icon: "error",
-                                  });
+                                  if (res.responseJSON.error_code == "Work-Has-Join-to-Work-shop@Community-Admin") {
+                                    swal({
+                                      title: "错误",
+                                      text: "这个作品你投过了吧？",
+                                      icon: "error",
+                                    });
+                                  } else {
+                                    swal({
+                                      title: "错误",
+                                      text: "未知错误，如果此作品是KittenN作品，可能当前并不支持投稿😭",
+                                      icon: "error",
+                                    });
+                                  }
+
                                   // console.log(res.responseJSON);
                                 },
                               });
