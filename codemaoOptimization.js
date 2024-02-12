@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.46.274
+// @version      1.47.280
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -12,7 +12,6 @@
 // @require      https://fastly.jsdelivr.net/npm/lil-gui@0.16
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/tldjs/2.3.1/tld.min.js
 // @require      https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.js
-// @require      https://greasyfork.org/scripts/465118-librarycomment/code/libraryComment.js?version=1229105
 // @license      616 SB License
 
 // ==/UserScript==
@@ -45,7 +44,7 @@ XMLHttpRequest.prototype.open = function () {
     }
   }
   // 白名单
-  let whiteList = ["box3.codemao.cn", "pickduck.cn", "shequ.codemao.cn", "player.codemao.cn", "static.yuzifu.top", "blog.yzf.moe", "player.bilibili.com", "bcmcreator.cn"];
+  let whiteList = ["box3.codemao.cn", "pickduck.cn", "shequ.codemao.cn", "player.codemao.cn", "static.yuzifu.top", "blog.yzf.moe", "player.bilibili.com", "bcmcreator.cn", "pgaot.com", "shequ.pgaot.com"];
   // 感谢刘andy提供的代码awa
   unsafeWindow._dangerouslyOpenNewWindow = unsafeWindow.open;
   unsafeWindow.openurl = (url) => {
@@ -210,15 +209,6 @@ XMLHttpRequest.prototype.open = function () {
     }
   }, 10);
   setInterval(() => {
-    GM_xmlhttpRequest({
-      method: "get",
-      url: "https://api.codemao.cn/creation-tools/v1/user/center/honor",
-      data: document.cookie,
-      binary: true,
-      onload({ response }) {
-        localStorage.setItem("twikoo", `{"nick":"${JSON.parse(response).nickname}","mail":"","link":"${"https://shequ.codemao.cn/user/" + JSON.parse(response).user_id}"}`);
-      },
-    });
     try {
       if (window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum") != -1) {
         titleChange("论坛 | 编程猫社区");
@@ -816,14 +806,15 @@ XMLHttpRequest.prototype.open = function () {
           }
           $("head").append(`
                   <style class="darkmode">
-                  .twikoo {
+                  #comment_container,
+                  #page {
                     color: #eeeeee;
                   }
-                  .twikoo strong,
-                  .twikoo a{
+                  #comment_container strong,
+                  #comment_container a{
                     color: currentColor;
                   }
-                  .twikoo pre {
+                  #comment_container pre {
                     color: currentColor;
                     background-color: transparent;
                   }
