@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.47.280
+// @version      1.47.281
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -929,7 +929,8 @@ XMLHttpRequest.prototype.open = function () {
                   .r-work_shop-r-manage-c-edit_workshop_info--edit_wrap header .r-work_shop-r-manage-c-edit_workshop_info--title,
                   .r-work_shop-r-manage-c-workshop_info_editor--item_name,
                   .c-logout--content p,
-                  .c-dialog-c-sign_box--main_content .c-dialog-c-sign_box--tap_cont .c-dialog-c-sign_box--item
+                  .c-dialog-c-sign_box--main_content .c-dialog-c-sign_box--tap_cont .c-dialog-c-sign_box--item,
+                  .like[active]
                   {
                       color:#fff!important
                   }

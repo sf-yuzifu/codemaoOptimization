@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         图书馆评论区
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.1.6
+// @version      1.1.8
 // @description  图书馆评论区接入
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -35,6 +35,10 @@
           </div>
         </div>
         <style>
+        @font-face{
+          font-family: 'icomoon2';
+          src: url('https://cdn-community.codemao.cn/community_frontend/fonts/icomoon.e025c6491ae7ebcfe7a1b43fc20cef0e.ttf');
+        }
         #comment_container #header {
           display: flex;
           align-items: center;
@@ -45,6 +49,7 @@
           width: 50px;
           height: 50px;
           border-radius: 100%;
+          margin: 0 8px 0 0;
         }
         #comment_container div[comment-id] .info {
           margin: 0 0 15px 0;
@@ -70,6 +75,24 @@
         }
         div[disable] {
           opacity: 0.5;
+        }
+        #comment_container .dock {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 14px;
+        }
+        .like {
+          cursor: pointer;
+        }
+        .icon-like_phone {
+          font-family: icomoon2!important;
+        }
+        .icon-like_phone:before {
+          content: "\\E945";
+        }
+        .like[active] {
+          color: var(--main-color);
         }
         </style>
       `);
@@ -129,10 +152,37 @@
                       <a target="_blank" href="https://shequ.codemao.cn/user/${i["user_id"]}"><span>${i.nickname}</span></a>
                     </div>
                     <div style="margin: 10px 0;">${b.innerHTML}</div>
-                    <span style="opacity: 0.7;font-size: 14px;">${timestampToTime(i.create_time)}</span>
+                    <div class="dock">
+                      <span style="opacity: 0.7;">${timestampToTime(i.create_time)}</span>
+                      <div class="like" ${i.praised ? " active" : ""}>
+                        <i class="icon-like_phone"></i>
+                        <span>${i.praise_times}</span>
+                      </div>
+                    </div>
                   </div>
-                `);
+              `);
             }
+            $(".like").on("click", function () {
+              console.log(this.parentNode.parentNode.getAttribute("comment-id"), this.hasAttribute("active"));
+              $.ajax({
+                type: this.hasAttribute("active") ? "DELETE" : "POST",
+                url: `https://api.codemao.cn/api/fanfic/comments/praise/${this.parentNode.parentNode.getAttribute("comment-id")}`,
+                contentType: "application/json;charset=UTF-8",
+                xhrFields: {
+                  withCredentials: true,
+                },
+                success: function (res) {
+                  if (document.querySelector("#num")) {
+                    upload_comment(parseInt(document.querySelector("#num").innerHTML) - 1);
+                  } else {
+                    upload_comment(0);
+                  }
+                },
+                error: function (res) {
+                  console.log(res.responseJSON);
+                },
+              });
+            });
           },
           error: function (res) {
             console.log(res.responseJSON);
