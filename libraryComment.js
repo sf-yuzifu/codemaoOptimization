@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         图书馆评论区
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.1.5
+// @version      1.1.6
 // @description  图书馆评论区接入
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -117,13 +117,18 @@
               });
             });
             for (let i of a) {
+              let b = document.createElement("div");
+              b.innerHTML = i.content;
+              for (let q of b.querySelectorAll("iframe,embed")) {
+                q.parentNode.removeChild(q);
+              }
               $("#comment_container").append(`
                   <div comment-id="${i.id}">
                     <div class="info">
                       <img src="${i["user_avatar"]}" />
                       <a target="_blank" href="https://shequ.codemao.cn/user/${i["user_id"]}"><span>${i.nickname}</span></a>
                     </div>
-                    <div style="margin: 10px 0;">${i.content}</div>
+                    <div style="margin: 10px 0;">${b.innerHTML}</div>
                     <span style="opacity: 0.7;font-size: 14px;">${timestampToTime(i.create_time)}</span>
                   </div>
                 `);
