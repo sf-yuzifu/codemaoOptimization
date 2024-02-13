@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         图书馆评论区
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.1.8
+// @version      1.1.10
 // @description  图书馆评论区接入
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -34,6 +34,10 @@
             <p style="font-size:18px;"><span></span> 评论</p>
           </div>
         </div>
+        <div id="comment_sender">
+          <textarea id="content"></textarea>
+          <button id="post">发表评论</button>
+        </div>
         <style>
         @font-face{
           font-family: 'icomoon2';
@@ -53,6 +57,9 @@
         }
         #comment_container div[comment-id] .info {
           margin: 0 0 15px 0;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         }
         #comment_container div[comment-id] {
           padding: 25px 13px;
@@ -94,11 +101,77 @@
         .like[active] {
           color: var(--main-color);
         }
+        #comment_sender {
+          margin: 30px 0 0 0;
+        }
+        #comment_sender textarea {
+          width: 100%;
+          border: 1px solid #e6e6e6;
+          resize: none;
+          min-height: 100px;
+          border-radius: 4px;
+          padding: 10px;
+          overflow: hidden;
+        }
+        #comment_sender #post {
+          float: right;
+          padding: 10px 15px;
+          background: var(--second-color);
+          color: #e6e6e6;
+          border-radius: 4px;
+          margin: 10px 0;
+          cursor: pointer;
+        }
+        .del {
+          font-size: 12px;
+          cursor: pointer;
+        }
         </style>
       `);
+      var textarea = document.querySelector("#content");
+
+      textarea.addEventListener("input", function () {
+        this.style.height = "102px";
+        this.style.height = this.scrollHeight + "px";
+      });
+
+      $("#post").on("click", function () {
+        console.log(document.querySelector("#content").value);
+        $.ajax({
+          type: "POST",
+          url: `https://api.codemao.cn/api/fanfic/comments/${fanficID}`,
+          contentType: "application/json;charset=UTF-8",
+          xhrFields: {
+            withCredentials: true,
+          },
+          data: JSON.stringify({
+            content: html2Escape(document.querySelector("#content").value),
+          }),
+          dataType: "json",
+          success: function (res) {
+            if (document.querySelector("#num")) {
+              upload_comment(parseInt(document.querySelector("#num").innerHTML) - 1);
+            } else {
+              upload_comment(0);
+            }
+            document.querySelector("#content").value = "";
+          },
+          error: function (res) {
+            console.log(res.responseJSON);
+          },
+        });
+      });
+
+      function html2Escape(sHtml) {
+        return sHtml.replace(/[<>&"]/g, function (c) {
+          return { "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c];
+        });
+      }
+
       let fanficID = window.location.href.split("/").pop();
       let total_num = null;
       let total_page = null;
+
       function upload_comment(page) {
         $.ajax({
           type: "GET",
@@ -139,6 +212,7 @@
                 }
               });
             });
+
             for (let i of a) {
               let b = document.createElement("div");
               b.innerHTML = i.content;
@@ -148,8 +222,11 @@
               $("#comment_container").append(`
                   <div comment-id="${i.id}">
                     <div class="info">
-                      <img src="${i["user_avatar"]}" />
-                      <a target="_blank" href="https://shequ.codemao.cn/user/${i["user_id"]}"><span>${i.nickname}</span></a>
+                      <div>
+                        <img src="${i["user_avatar"]}" />
+                        <a target="_blank" href="https://shequ.codemao.cn/user/${i["user_id"]}"><span>${i.nickname}</span></a>
+                      </div>
+                      ${localStorage.getItem("user_id") == i["user_id"] ? "<div class='del'>删除</div>" : ""}
                     </div>
                     <div style="margin: 10px 0;">${b.innerHTML}</div>
                     <div class="dock">
@@ -167,6 +244,27 @@
               $.ajax({
                 type: this.hasAttribute("active") ? "DELETE" : "POST",
                 url: `https://api.codemao.cn/api/fanfic/comments/praise/${this.parentNode.parentNode.getAttribute("comment-id")}`,
+                contentType: "application/json;charset=UTF-8",
+                xhrFields: {
+                  withCredentials: true,
+                },
+                success: function (res) {
+                  if (document.querySelector("#num")) {
+                    upload_comment(parseInt(document.querySelector("#num").innerHTML) - 1);
+                  } else {
+                    upload_comment(0);
+                  }
+                },
+                error: function (res) {
+                  console.log(res.responseJSON);
+                },
+              });
+            });
+            $(".del").on("click", function () {
+              console.log(this.parentNode.parentNode.getAttribute("comment-id"));
+              $.ajax({
+                type: "DELETE",
+                url: `https://api.codemao.cn/api/fanfic/comments/${this.parentNode.parentNode.getAttribute("comment-id")}`,
                 contentType: "application/json;charset=UTF-8",
                 xhrFields: {
                   withCredentials: true,
