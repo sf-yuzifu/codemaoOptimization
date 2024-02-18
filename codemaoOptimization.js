@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.47.283
+// @version      1.47.284
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -383,7 +383,7 @@ XMLHttpRequest.prototype.open = function () {
           } else if (workType == "海龟编辑器") {
             web = "https://turtle.codemao.cn/?entry=sharing&channel_type=community&action=open_published_project&work_id=";
           } else if (workType == "KittenN编辑器") {
-            web = "https://kn.codemao.cn/player?workId=";
+            web = "https://kn.codemao.cn/player?type=2&workId=";
           }
           $(".r-work-c-player--work_player_container .r-work-c-player--player_container.r-work-c-player--fullscreen iframe").css("height", "100%");
           if (!document.querySelector(".c-virtual_player--virtual_player").getElementsByTagName("iframe")[0]) {
