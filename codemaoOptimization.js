@@ -1,18 +1,17 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.47.284
+// @version      1.50.290
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
 // @icon         https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3
 // @grant        GM_xmlhttpRequest
-// @require      https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js
+// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js
 // @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/sweetalert/2.1.2/sweetalert.min.js
-// @require      https://fastly.jsdelivr.net/npm/lil-gui@0.16
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/tldjs/2.3.1/tld.min.js
-// @require      https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.js
-// @require      https://update.greasyfork.org/scripts/465118/1326626/libraryComment.js
+// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.js
+// @require      https://edgeone.gh-proxy.com/github.com/sf-yuzifu/codemaoOptimization/blob/main/libraryComment.js
 // @license      616 SB License
 
 // ==/UserScript==
@@ -45,7 +44,18 @@ XMLHttpRequest.prototype.open = function () {
     }
   }
   // 白名单
-  let whiteList = ["box3.codemao.cn", "pickduck.cn", "shequ.codemao.cn", "player.codemao.cn", "static.yuzifu.top", "blog.yzf.moe", "player.bilibili.com", "bcmcreator.cn", "pgaot.com", "shequ.pgaot.com"];
+  let whiteList = [
+    "box3.codemao.cn",
+    "pickduck.cn",
+    "shequ.codemao.cn",
+    "player.codemao.cn",
+    "static.yuzifu.top",
+    "blog.yzf.moe",
+    "player.bilibili.com",
+    "bcmcreator.cn",
+    "pgaot.com",
+    "shequ.pgaot.com",
+  ];
   // 感谢刘andy提供的代码awa
   unsafeWindow._dangerouslyOpenNewWindow = unsafeWindow.open;
   unsafeWindow.openurl = (url) => {
@@ -184,7 +194,9 @@ XMLHttpRequest.prototype.open = function () {
     //尝试制作防劫持
     if (
       window.location.href.indexOf("message") != -1 ||
-      ((window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) && parseInt(window.location.href.slice(25 + 11)) && document.querySelector("iframe")) ||
+      ((window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) &&
+        parseInt(window.location.href.slice(25 + 11)) &&
+        document.querySelector("iframe")) ||
       window.location.href.indexOf("reader") != -1
     ) {
       var iframes = document.querySelectorAll("iframe");
@@ -207,6 +219,11 @@ XMLHttpRequest.prototype.open = function () {
           embeds[i].parentNode.replaceChild(embed_to_iframe, embeds[i]);
         }
       }
+      document.querySelectorAll(".c-navigator--navigator").forEach((e) => {
+        if (e != document.querySelector(".c-navigator--navigator")) {
+          e.className = "";
+        }
+      });
     }
   }, 10);
   setInterval(() => {
@@ -215,12 +232,21 @@ XMLHttpRequest.prototype.open = function () {
         titleChange("论坛 | 编程猫社区");
       }
       if (window.location.href.indexOf("work_shop") != -1) {
-        if (parseInt(window.location.href.slice(25 + 10)) && document.querySelector(".r-work_shop-r-details--details_wrap .r-work_shop-r-details--header_cont .r-work_shop-r-details--title p")) {
-          titleChange("工作室 | " + document.querySelector(".r-work_shop-r-details--details_wrap .r-work_shop-r-details--header_cont .r-work_shop-r-details--title p").innerHTML + " | 编程猫社区");
+        if (
+          parseInt(window.location.href.slice(25 + 10)) &&
+          document.querySelector(".r-work_shop-r-details--details_wrap .r-work_shop-r-details--header_cont .r-work_shop-r-details--title p")
+        ) {
+          titleChange(
+            "工作室 | " +
+              document.querySelector(".r-work_shop-r-details--details_wrap .r-work_shop-r-details--header_cont .r-work_shop-r-details--title p").innerHTML +
+              " | 编程猫社区"
+          );
           if (document.querySelector(".c-model_box--show:not(.target,.abc) .r-work_shop-r-details-component-project_dialog--project_box_wrap")) {
             document.querySelector(".c-model_box--show:not(.target)").classList.add("target");
             document.querySelector(".c-model_box--show .r-work_shop-r-details-component-project_dialog--project_box_wrap").classList.add("target");
-            $(".c-model_box--show .r-work_shop-r-details-component-project_dialog--project_box_wrap").after("<div class='r-work_shop-r-details-component-project_dialog--project_box_wrap abc'></div>");
+            $(".c-model_box--show .r-work_shop-r-details-component-project_dialog--project_box_wrap").after(
+              "<div class='r-work_shop-r-details-component-project_dialog--project_box_wrap abc'></div>"
+            );
             $(".c-model_box--show .r-work_shop-r-details-component-project_dialog--project_box_wrap.target").remove();
             $(".c-model_box--show .r-work_shop-r-details-component-project_dialog--project_box_wrap").append(
               `<div id="post_project_box" class="r-work_shop-r-details-component-project_dialog--container">
@@ -232,22 +258,28 @@ XMLHttpRequest.prototype.open = function () {
               </div>
               `
             );
-            GM_xmlhttpRequest({
-              method: "get",
+            $.ajax({
+              type: "GET",
               url: "https://api.codemao.cn/creation-tools/v1/user/center/honor",
-              data: document.cookie,
-              binary: true,
-              onload({ response }) {
-                GM_xmlhttpRequest({
-                  method: "get",
-                  url: `https://api.codemao.cn/creation-tools/v2/user/center/work-list?user_id=${JSON.parse(response).user_id}&offset=0&limit=1000`,
-                  data: document.cookie,
-                  binary: true,
-                  async onload({ response }) {
-                    if (JSON.parse(response).items.length !== 0) {
+              contentType: "application/json;charset=UTF-8",
+              dataType: "json",
+              xhrFields: {
+                withCredentials: true,
+              },
+              success: function (response) {
+                $.ajax({
+                  type: "GET",
+                  url: `https://api.codemao.cn/creation-tools/v2/user/center/work-list?user_id=${response.user_id}&offset=0&limit=1000`,
+                  contentType: "application/json;charset=UTF-8",
+                  dataType: "json",
+                  xhrFields: {
+                    withCredentials: true,
+                  },
+                  success: function (response) {
+                    if (response.items.length !== 0) {
                       $(".r-work_shop-r-details-component-project_dialog--empty").remove();
                     }
-                    for (let abc of JSON.parse(response).items) {
+                    for (let abc of response.items) {
                       let type;
                       switch (abc.type) {
                         case 1:
@@ -291,18 +323,22 @@ XMLHttpRequest.prototype.open = function () {
                       }
                     }
                     $(".r-work_shop-r-details-component-project_dialog--item[work-id]").on("click", function () {
-                      swal(`确定是 ${this.getElementsByClassName("r-work_shop-r-details-component-project_dialog--item_name")[0].innerHTML} 这个作品吗？`, { buttons: ["取消", "确认"] }).then((value) => {
+                      swal(`确定是 ${this.getElementsByClassName("r-work_shop-r-details-component-project_dialog--item_name")[0].innerHTML} 这个作品吗？`, {
+                        buttons: ["取消", "确认"],
+                      }).then((value) => {
                         let work_id = this.getAttribute("work-id");
                         if (value) {
-                          GM_xmlhttpRequest({
-                            method: "get",
+                          $.ajax({
+                            type: "GET",
+                            contentType: "application/json;charset=UTF-8",
+                            xhrFields: {
+                              withCredentials: true,
+                            },
                             url: "https://api.codemao.cn/web/shops/" + parseInt(window.location.href.slice(25 + 10)),
-                            data: document.cookie,
-                            binary: true,
-                            async onload({ response }) {
+                            success: function (response) {
                               $.ajax({
                                 type: "POST",
-                                url: `https://api.codemao.cn/web/work_shops/works/contribute?id=${JSON.parse(response).shop_id}&work_id=${work_id}`,
+                                url: `https://api.codemao.cn/web/work_shops/works/contribute?id=${response.shop_id}&work_id=${work_id}`,
                                 contentType: "application/json;charset=UTF-8",
                                 xhrFields: {
                                   withCredentials: true,
@@ -388,7 +424,10 @@ XMLHttpRequest.prototype.open = function () {
           $(".r-work-c-player--work_player_container .r-work-c-player--player_container.r-work-c-player--fullscreen iframe").css("height", "100%");
           if (!document.querySelector(".c-virtual_player--virtual_player").getElementsByTagName("iframe")[0]) {
             document.querySelector(".c-virtual_player--virtual_player").innerHTML =
-              '<iframe id="player_cover" allow="geolocation; microphone; camera" sandbox="allow-forms allow-modals allow-popups allow-same-origin allow-scripts" src="' + web + parseInt(window.location.href.slice(25 + 5)) + '"></iframe>';
+              '<iframe id="player_cover" allow="geolocation; microphone; camera" sandbox="allow-forms allow-modals allow-popups allow-same-origin allow-scripts" src="' +
+              web +
+              parseInt(window.location.href.slice(25 + 5)) +
+              '"></iframe>';
           }
         }
       }
@@ -493,7 +532,11 @@ XMLHttpRequest.prototype.open = function () {
       if (window.location.href.indexOf("wiki/book") != -1) {
         titleChange("资料图鉴 | 编程猫社区");
       }
-      if ((window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) && parseInt(window.location.href.slice(25 + 11)) && document.querySelector(".r-community-r-detail--forum_content")) {
+      if (
+        (window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) &&
+        parseInt(window.location.href.slice(25 + 11)) &&
+        document.querySelector(".r-community-r-detail--forum_content")
+      ) {
         let gallery = new Viewer(document.querySelector(".r-community-r-detail--forum_content"));
         for (var photos of document.querySelectorAll(".r-community-r-detail-c-comment_item--content")) {
           new Viewer(photos);
@@ -529,7 +572,9 @@ XMLHttpRequest.prototype.open = function () {
         let PICKCAT = localStorage.getItem("customLogo") || "PICKCAT";
         $(".c-navigator--logo_wrap").append(`<span class='pickcat'>${PICKCAT}</span>`);
         $(".index__header-brand___2nK8h").append(`<span class='pickcat'>${PICKCAT}</span>`);
-        $("li[data-watch_event='下载APP-入口tab']").after(`<li class="event_target data_report c-navigator--item" data-watch_event="设置-入口tab" data-extra_word_one="点击" data-data_report_btn_name="设置-入口tab"><a>设置</a></li>`);
+        $("li[data-watch_event='下载APP-入口tab']").after(
+          `<li class="event_target data_report c-navigator--item" data-watch_event="设置-入口tab" data-extra_word_one="点击" data-data_report_btn_name="设置-入口tab"><a>设置</a></li>`
+        );
         $("li.index__first-nav-content___1Ea0w:last-child").before(
           `<li data-watch_event="设置-入口tab" data-extra_word_one="点击" data-data_report_btn_name="设置-入口tab" class="index__first-nav-content___1Ea0w"><div class="index__more_nav___2gH4S"><a>设置</a><span> </span><i></i></div></li>`
         );
@@ -537,7 +582,10 @@ XMLHttpRequest.prototype.open = function () {
         document.documentElement.style.setProperty("--second-color", localStorage.getItem("second-color") || "#f6b206");
         document.documentElement.style.setProperty("--person-setting", localStorage.getItem("person-setting") || "pic");
         document.documentElement.style.setProperty("--person-color", localStorage.getItem("person-color") || "#000");
-        document.documentElement.style.setProperty("--person-bg", localStorage.getItem("person-bg") || "url(https://cdn-community.codemao.cn/community_frontend/asset/banner_65b4a.png)");
+        document.documentElement.style.setProperty(
+          "--person-bg",
+          localStorage.getItem("person-bg") || "url(https://cdn-community.codemao.cn/community_frontend/asset/banner_65b4a.png)"
+        );
         document.documentElement.style.setProperty("--highlight-color", localStorage.getItem("highlight-color") || "#ec443d");
         document.documentElement.style.setProperty("--isLevelShown", localStorage.getItem("isLevelShown") || "");
         try {
@@ -655,71 +703,16 @@ XMLHttpRequest.prototype.open = function () {
         var ws;
         let user_id;
         let wsHeart;
-        setInterval(() => {
-          if (!ws) {
-            user_id = localStorage.getItem("user_id");
-
-            ws = new WebSocket(`wss://7c364134-d8e2-4b58-9567-7ca3847e4534-00-o9h3cgt860l2.pike.replit.dev/?id=${localStorage.getItem("user_id")}`);
-            ws.onopen = function (evt) {
-              wsHeart = setInterval(() => {
-                let sendobj = JSON.stringify({
-                  id: localStorage.getItem("user_id"),
-                  type: "post",
-                });
-                ws.send(sendobj);
-                if (window.location.href.indexOf("user/") != -1 && parseInt(window.location.href.slice(25 + 5))) {
-                  let sendobj = JSON.stringify({
-                    id: parseInt(window.location.href.slice(25 + 5)).toString(),
-                    type: "get",
-                  });
-                  ws.send(sendobj);
-
-                  ws.onmessage = function (e) {
-                    // console.log(JSON.parse(e.data).status);
-                    if (!document.querySelector(".user-status") && JSON.parse(e.data).status !== "未知") {
-                      $(".r-user-c-banner--banner .r-user-c-banner--background .r-user-c-banner--container .r-user-c-banner--photo img").before("<div class='user-status'></div>");
-                    }
-                    switch (JSON.parse(e.data).status) {
-                      case "在线":
-                        document.querySelector(".user-status").style.background = "lightgreen";
-                        break;
-                      case "离线":
-                        document.querySelector(".user-status").style.background = "gray";
-                        break;
-                      default:
-                        break;
-                    }
-                  };
-                }
-              }, 1000);
-              // console.log("Connection open ...");
-            };
-
-            ws.onclose = function (evt) {
-              // console.log("Connection closed.");
-              clearInterval(wsHeart);
-            };
-
-            ws.onerror = function (err) {
-              // console.log(err);
-            };
-          } else if (user_id !== localStorage.getItem("user_id")) {
-            if (ws) {
-              ws.close();
-              clearInterval(wsHeart);
-              ws = null;
-            }
-          }
-        }, 1000);
-
         if (window.location.href.indexOf("work/") != -1 && parseInt(window.location.href.slice(25 + 5))) {
-          GM_xmlhttpRequest({
-            method: "get",
+          $.ajax({
+            type: "GET",
             url: "https://api.codemao.cn/creation-tools/v1/works/" + parseInt(window.location.href.slice(25 + 5)),
-            data: document.cookie,
-            binary: true,
-            onload({ response }) {
-              if (JSON.parse(response).type == "NEMO") {
+            contentType: "application/json;charset=UTF-8",
+            xhrFields: {
+              withCredentials: true,
+            },
+            success: function (response) {
+              if (response.type == "NEMO") {
                 setInterval(() => {
                   if (document.querySelector(".r-work-c-player--player_fun .r-work-c-player--player_rotate_screen") == null) {
                     $(".r-work-c-player--player_full_screen").after(
@@ -763,7 +756,11 @@ XMLHttpRequest.prototype.open = function () {
               document.querySelector(".forum_editor .mce-edit-area.mce-container.mce-panel iframe").contentWindow.document.body.style.color = "";
             } catch (e) {}
           });
-          if ((window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) && parseInt(window.location.href.slice(25 + 10)) && document.querySelector("iframe[allowfullscreen]")) {
+          if (
+            (window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) &&
+            parseInt(window.location.href.slice(25 + 10)) &&
+            document.querySelector("iframe[allowfullscreen]")
+          ) {
             document.querySelector("iframe[allowfullscreen]").src = document.querySelector("iframe[allowfullscreen]").src;
             if (document.querySelector("iframe[allowfullscreen]").attachEvent) {
               document.querySelector("iframe[allowfullscreen]").attachEvent("onload", function () {
@@ -793,7 +790,11 @@ XMLHttpRequest.prototype.open = function () {
               document.querySelector(".forum_editor .mce-edit-area.mce-container.mce-panel iframe").contentWindow.document.body.style.color = "#fff";
             } catch (e) {}
           });
-          if ((window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) && parseInt(window.location.href.slice(25 + 10)) && document.querySelector("iframe[allowfullscreen]")) {
+          if (
+            (window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) &&
+            parseInt(window.location.href.slice(25 + 10)) &&
+            document.querySelector("iframe[allowfullscreen]")
+          ) {
             // document.querySelector("iframe[allowfullscreen]").src = document.querySelector("iframe[allowfullscreen]").src;
             if (document.querySelector("iframe[allowfullscreen]").attachEvent) {
               document.querySelector("iframe[allowfullscreen]").attachEvent("onload", function () {
@@ -1325,23 +1326,29 @@ XMLHttpRequest.prototype.open = function () {
         });
         $('input[value="pic"]').on("change", () => {
           document.documentElement.style.setProperty("--person-color", "");
-          document.documentElement.style.setProperty("--person-bg", localStorage.getItem("person-bg") || "url(https://cdn-community.codemao.cn/community_frontend/asset/banner_65b4a.png)");
+          document.documentElement.style.setProperty(
+            "--person-bg",
+            localStorage.getItem("person-bg") || "url(https://cdn-community.codemao.cn/community_frontend/asset/banner_65b4a.png)"
+          );
           localStorage.setItem("person-setting", "pic");
           document.documentElement.style.setProperty("--person-setting", "pic");
           document.querySelector("#person-bg-btn").style.display = "block";
           document.querySelector("#person-color").style.display = "none";
-          if (window.location.href.indexOf("user") != -1 && JSON.parse(response).user_id != parseInt(window.location.href.slice(25 + 5))) {
-            GM_xmlhttpRequest({
-              method: "get",
+          if (window.location.href.indexOf("user") != -1 && response.user_id != parseInt(window.location.href.slice(25 + 5))) {
+            $.ajax({
+              type: "GET",
               url: "https://api.codemao.cn/creation-tools/v1/user/center/honor?user_id=" + parseInt(window.location.href.slice(25 + 5)),
-              data: document.cookie,
-              binary: true,
-              onload({ response }) {
-                if (JSON.parse(response).user_cover == "") {
+              contentType: "application/json;charset=UTF-8",
+              dataType: "json",
+              xhrFields: {
+                withCredentials: true,
+              },
+              success: function (response) {
+                if (response.user_cover == "") {
                   document.documentElement.style.setProperty("--person-bg", "url(https://cdn-community.codemao.cn/community_frontend/asset/banner_65b4a.png)");
                   document.documentElement.style.setProperty("--person-color", "");
                 } else {
-                  document.documentElement.style.setProperty("--person-bg", "url(" + JSON.parse(response).user_cover + ")");
+                  document.documentElement.style.setProperty("--person-bg", "url(" + response.user_cover + ")");
                   document.documentElement.style.setProperty("--person-color", "");
                 }
               },
@@ -1355,18 +1362,21 @@ XMLHttpRequest.prototype.open = function () {
           document.documentElement.style.setProperty("--person-setting", "color");
           document.querySelector("#person-bg-btn").style.display = "none";
           document.querySelector("#person-color").style.display = "block";
-          if (window.location.href.indexOf("user") != -1 && JSON.parse(response).user_id != parseInt(window.location.href.slice(25 + 5))) {
-            GM_xmlhttpRequest({
-              method: "get",
+          if (window.location.href.indexOf("user") != -1 && response.user_id != parseInt(window.location.href.slice(25 + 5))) {
+            $.ajax({
+              type: "GET",
               url: "https://api.codemao.cn/creation-tools/v1/user/center/honor?user_id=" + parseInt(window.location.href.slice(25 + 5)),
-              data: document.cookie,
-              binary: true,
-              onload({ response }) {
-                if (JSON.parse(response).user_cover == "") {
+              contentType: "application/json;charset=UTF-8",
+              dataType: "json",
+              xhrFields: {
+                withCredentials: true,
+              },
+              success: function (response) {
+                if (response.user_cover == "") {
                   document.documentElement.style.setProperty("--person-bg", "url(https://cdn-community.codemao.cn/community_frontend/asset/banner_65b4a.png)");
                   document.documentElement.style.setProperty("--person-color", "");
                 } else {
-                  document.documentElement.style.setProperty("--person-bg", "url(" + JSON.parse(response).user_cover + ")");
+                  document.documentElement.style.setProperty("--person-bg", "url(" + response.user_cover + ")");
                   document.documentElement.style.setProperty("--person-color", "");
                 }
               },
@@ -1378,7 +1388,10 @@ XMLHttpRequest.prototype.open = function () {
             document.querySelector('li[data-watch_event="' + this.value + '-入口tab"]').style.display = this.checked ? "" : "none";
           } else {
             for (h of document.querySelectorAll(".index__first-nav-content___1Ea0w")) {
-              if (h.getElementsByTagName("a")[0].innerHTML == this.value || (h.getElementsByTagName("a")[0].getElementsByTagName("span")[1] && h.getElementsByTagName("a")[0].getElementsByTagName("span")[1].innerHTML == this.value)) {
+              if (
+                h.getElementsByTagName("a")[0].innerHTML == this.value ||
+                (h.getElementsByTagName("a")[0].getElementsByTagName("span")[1] && h.getElementsByTagName("a")[0].getElementsByTagName("span")[1].innerHTML == this.value)
+              ) {
                 h.style.display = this.checked ? "" : "none";
               }
             }
@@ -1637,22 +1650,25 @@ XMLHttpRequest.prototype.open = function () {
           }).then((value) => {
             if (value) {
               if (inputment.value != "") {
-                GM_xmlhttpRequest({
-                  method: "get",
+                $.ajax({
+                  type: "GET",
                   url: `https://api.codemao.cn/creation-tools/v1/works/${inputment.value}/comments?offset=0&limit=5`,
-                  data: document.cookie,
-                  binary: true,
-                  onload({ response }) {
+                  contentType: "application/json;charset=UTF-8",
+                  dataType: "json",
+                  xhrFields: {
+                    withCredentials: true,
+                  },
+                  success: function (response) {
                     if (response == undefined) {
                       swal({
                         title: "错误",
                         text: "未知原因",
                         icon: "error",
                       });
-                    } else if (JSON.parse(response).error_message !== undefined) {
+                    } else if (response.error_message !== undefined) {
                       swal({
                         title: "错误",
-                        text: JSON.parse(response).error_message,
+                        text: response.error_message,
                         icon: "error",
                       });
                     } else {
@@ -1660,10 +1676,10 @@ XMLHttpRequest.prototype.open = function () {
                       junkCommentID = [];
                       searching = 0;
                       junkContent = [];
-                      readComment(0, inputment.value, JSON.parse(response).page_total);
+                      readComment(0, inputment.value, response.page_total);
                       swal({
                         title: "查找中···",
-                        text: `正在查找垃圾评论，目前进度0/${JSON.parse(response).page_total}`,
+                        text: `正在查找垃圾评论，目前进度0/${response.page_total}`,
                         icon: "info",
                         buttons: false,
                         closeOnClickOutside: false,
@@ -1704,7 +1720,10 @@ XMLHttpRequest.prototype.open = function () {
                 i.checked = true;
               } else if (document.querySelector(".index__first-nav-content___1Ea0w")) {
                 for (h of document.querySelectorAll(".index__first-nav-content___1Ea0w")) {
-                  if (h.getElementsByTagName("a")[0].innerHTML == i.value || (h.getElementsByTagName("a")[0].getElementsByTagName("span")[1] && h.getElementsByTagName("a")[0].getElementsByTagName("span")[1].innerHTML == i.value)) {
+                  if (
+                    h.getElementsByTagName("a")[0].innerHTML == i.value ||
+                    (h.getElementsByTagName("a")[0].getElementsByTagName("span")[1] && h.getElementsByTagName("a")[0].getElementsByTagName("span")[1].innerHTML == i.value)
+                  ) {
                     h.style.display = "";
                     i.checked = true;
                   }
@@ -1716,7 +1735,10 @@ XMLHttpRequest.prototype.open = function () {
                 i.checked = false;
               } else if (document.querySelector(".index__first-nav-content___1Ea0w")) {
                 for (h of document.querySelectorAll(".index__first-nav-content___1Ea0w")) {
-                  if (h.getElementsByTagName("a")[0].innerHTML == i.value || (h.getElementsByTagName("a")[0].getElementsByTagName("span")[1] && h.getElementsByTagName("a")[0].getElementsByTagName("span")[1].innerHTML == i.value)) {
+                  if (
+                    h.getElementsByTagName("a")[0].innerHTML == i.value ||
+                    (h.getElementsByTagName("a")[0].getElementsByTagName("span")[1] && h.getElementsByTagName("a")[0].getElementsByTagName("span")[1].innerHTML == i.value)
+                  ) {
                     h.style.display = "none";
                     i.checked = false;
                   }
@@ -1788,33 +1810,43 @@ XMLHttpRequest.prototype.open = function () {
           }).then((value) => {
             if (value) {
               if (inputment.value != "") {
-                GM_xmlhttpRequest({
-                  method: "get",
+                $.ajax({
+                  type: "GET",
                   url: "https://api.codemao.cn/tiger/work/tree/" + inputment.value,
-                  data: document.cookie,
-                  binary: true,
-                  async onload({ response }) {
+                  contentType: "application/json;charset=UTF-8",
+                  dataType: "json",
+                  xhrFields: {
+                    withCredentials: true,
+                  },
+                  success: function (response) {
                     if (response == undefined) {
                       swal({
                         title: "错误",
                         text: "未知原因",
                         icon: "error",
                       });
-                    } else if (JSON.parse(response).children == undefined) {
+                    } else if (response.children == undefined) {
                       swal({
                         title: "错误",
                         text: "请检查一下自己的作品ID是否输入正确！",
                         icon: "error",
                       });
                     } else {
-                      var s = remixCheck(JSON.parse(response).children, [[], [], []]);
+                      var s = remixCheck(response.children, [[], [], []]);
                       if (s[0].length != 0) {
                         var copymefuck = document.createElement("table");
                         copymefuck.style = "width:100%;border-spacing: 10px;";
                         for (var ppp = 0; ppp < s[0].length; ppp++) {
                           var aaa = document.createElement("tr");
                           aaa.setAttribute("published", s[2][ppp]);
-                          aaa.innerHTML += "<td><a style='color:var(--main-color)' target='_blank' href='https://shequ.codemao.cn/work/" + s[0][ppp] + "'>" + s[0][ppp] + "</a></td><td>" + s[1][ppp] + "</td>";
+                          aaa.innerHTML +=
+                            "<td><a style='color:var(--main-color)' target='_blank' href='https://shequ.codemao.cn/work/" +
+                            s[0][ppp] +
+                            "'>" +
+                            s[0][ppp] +
+                            "</a></td><td>" +
+                            s[1][ppp] +
+                            "</td>";
                           copymefuck.appendChild(aaa);
                         }
 
@@ -1825,7 +1857,7 @@ XMLHttpRequest.prototype.open = function () {
                         });
                         document.querySelector(".swal-content").style = "max-height: 400px;overflow: auto;";
                         $(copymefuck).before("<p id='hidenotpub' class='pubornot'>隐藏未发布的</p>");
-                        $(copymefuck).before(`<p>原作品ID：<a href="https://shequ.codemao.cn/work/${JSON.parse(response).id}" target="_blank">${JSON.parse(response).id}</a></p>`);
+                        $(copymefuck).before(`<p>原作品ID：<a href="https://shequ.codemao.cn/work/${response.id}" target="_blank">${response.id}</a></p>`);
                         $(".pubornot").on("click", function () {
                           if (document.querySelector(".pubornot").id == "hidenotpub") {
                             $('tr[published="0"]').css("display", "none");
@@ -1923,35 +1955,44 @@ XMLHttpRequest.prototype.open = function () {
             buttons: false,
             timer: 3000,
           });
-          GM_xmlhttpRequest({
-            method: "get",
+          $.ajax({
+            type: "GET",
             url: "https://api.codemao.cn/web/message-record?query_type=LIKE_FORK&limit=200&offset=0",
-            data: document.cookie,
-            binary: true,
-            async onload({ response }) {
-              for (var y = 0; y < JSON.parse(response).total; y += 200) {
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            xhrFields: {
+              withCredentials: true,
+            },
+            success: function (response) {
+              for (var y = 0; y < response.total; y += 200) {
                 messDel(y, "LIKE_FORK");
               }
             },
           });
-          GM_xmlhttpRequest({
-            method: "get",
+          $.ajax({
+            type: "GET",
             url: "https://api.codemao.cn/web/message-record?query_type=SYSTEM&limit=200&offset=0",
-            data: document.cookie,
-            binary: true,
-            async onload({ response }) {
-              for (var y = 0; y < JSON.parse(response).total; y += 200) {
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            xhrFields: {
+              withCredentials: true,
+            },
+            success: function (response) {
+              for (var y = 0; y < response.total; y += 200) {
                 messDel(y, "SYSTEM");
               }
             },
           });
-          GM_xmlhttpRequest({
-            method: "get",
+          $.ajax({
+            type: "GET",
             url: "https://api.codemao.cn/web/message-record?query_type=COMMENT_REPLY&limit=200&offset=0",
-            data: document.cookie,
-            binary: true,
-            async onload({ response }) {
-              for (var y = 0; y < JSON.parse(response).total; y += 200) {
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            xhrFields: {
+              withCredentials: true,
+            },
+            success: function (response) {
+              for (var y = 0; y < response.total; y += 200) {
                 messDel(y, "COMMENT_REPLY");
               }
               swal({
@@ -1964,12 +2005,15 @@ XMLHttpRequest.prototype.open = function () {
         });
 
         async function messDel(offset, types) {
-          GM_xmlhttpRequest({
-            method: "get",
+          $.ajax({
+            type: "GET",
             url: "https://api.codemao.cn/web/message-record?query_type=" + types + "&limit=200&offset=" + offset,
-            data: document.cookie,
-            binary: true,
-            async onload({ response }) {},
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            xhrFields: {
+              withCredentials: true,
+            },
+            success: function (response) {},
           });
         }
 
@@ -2008,58 +2052,68 @@ XMLHttpRequest.prototype.open = function () {
           ".r-gallery-c-theme_card--card_item",
         ];
         setInterval(() => {
-          GM_xmlhttpRequest({
-            method: "get",
+          $.ajax({
+            type: "GET",
             url: "https://api.codemao.cn/creation-tools/v1/user/center/honor",
-            data: document.cookie,
-            binary: true,
-            async onload({ response }) {
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            xhrFields: {
+              withCredentials: true,
+            },
+            success: function (response) {
               var options, info;
-              if (JSON.parse(response).user_id) {
+              if (response.user_id) {
                 if (Notification.permission !== "denied") {
                   Notification.requestPermission().then((permission) => {});
                 }
-                if (!localStorage.getItem("user" + JSON.parse(response).user_id)) {
-                  localStorage.setItem("user" + JSON.parse(response).user_id, JSON.parse(response).fans_total + "," + JSON.parse(response).liked_total);
+                if (!localStorage.getItem("user" + response.user_id)) {
+                  localStorage.setItem("user" + response.user_id, response.fans_total + "," + response.liked_total);
                 }
-                if (localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[0] != JSON.parse(response).fans_total) {
-                  info = JSON.parse(response).fans_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[0] > 0 ? "多" : "少";
+                if (localStorage.getItem("user" + response.user_id).split(",")[0] != response.fans_total) {
+                  info = response.fans_total - localStorage.getItem("user" + response.user_id).split(",")[0] > 0 ? "多" : "少";
                   options = {
-                    body: `现在你的粉丝数为：${JSON.parse(response).fans_total}，比上次${info}了${Math.abs(JSON.parse(response).fans_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[0])}个`,
+                    body: `现在你的粉丝数为：${response.fans_total}，比上次${info}了${Math.abs(
+                      response.fans_total - localStorage.getItem("user" + response.user_id).split(",")[0]
+                    )}个`,
                     icon: "https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3",
                     tag: "fans_total",
                   };
                   if (n) n.close();
                   var n = new Notification("粉丝数", options); // 显示通知
                 }
-                if (localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[1] != JSON.parse(response).liked_total) {
-                  info = JSON.parse(response).liked_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[1] > 0 ? "多" : "少";
+                if (localStorage.getItem("user" + response.user_id).split(",")[1] != response.liked_total) {
+                  info = response.liked_total - localStorage.getItem("user" + response.user_id).split(",")[1] > 0 ? "多" : "少";
                   options = {
-                    body: `现在你的点赞数为：${JSON.parse(response).liked_total}，比上次${info}了${Math.abs(JSON.parse(response).liked_total - localStorage.getItem("user" + JSON.parse(response).user_id).split(",")[1])}个`,
+                    body: `现在你的点赞数为：${response.liked_total}，比上次${info}了${Math.abs(
+                      response.liked_total - localStorage.getItem("user" + response.user_id).split(",")[1]
+                    )}个`,
                     icon: "https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3",
                     tag: "liked_total",
                   };
                   if (k) k.close();
                   var k = new Notification("点赞数", options); // 显示通知
                 }
-                localStorage.setItem("user" + JSON.parse(response).user_id, JSON.parse(response).fans_total + "," + JSON.parse(response).liked_total);
+                localStorage.setItem("user" + response.user_id, response.fans_total + "," + response.liked_total);
               }
             },
           });
-          GM_xmlhttpRequest({
-            method: "get",
+          $.ajax({
+            type: "GET",
             url: "https://api.codemao.cn/web/message-record/count",
-            data: document.cookie,
-            binary: true,
-            async onload({ response }) {
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            xhrFields: {
+              withCredentials: true,
+            },
+            success: function (response) {
               try {
                 $("li[data-watch_event='消息-评论'] a .c-navigator--reply_count").css("display", "none");
                 $("li[data-watch_event='消息-赞'] a .c-navigator--reply_count").css("display", "none");
                 $("li[data-watch_event='消息-系统'] a .c-navigator--reply_count").css("display", "none");
                 $(".c-navigator--message span").css("display", "none");
               } catch (error) {}
-              if (JSON.parse(response)[0]) {
-                if (JSON.parse(response)[0].count == 0) {
+              if (response[0]) {
+                if (response[0].count == 0) {
                   if (document.querySelector("li[data-watch_event='消息-评论'] a .c-navigator--reply_count")) {
                     $("li[data-watch_event='消息-评论'] a .c-navigator--reply_count").css("display", "none");
                   } else if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb")) {
@@ -2068,18 +2122,18 @@ XMLHttpRequest.prototype.open = function () {
                 } else {
                   if (document.querySelector("li[data-watch_event='消息-评论'] a .c-navigator--reply_count")) {
                     $("li[data-watch_event='消息-评论'] a .c-navigator--reply_count:first-child").css("display", "");
-                    document.querySelector("li[data-watch_event='消息-评论'] a .c-navigator--reply_count").innerHTML = `(${JSON.parse(response)[0].count})`;
+                    document.querySelector("li[data-watch_event='消息-评论'] a .c-navigator--reply_count").innerHTML = `(${response[0].count})`;
                   } else {
-                    $("li[data-watch_event='消息-评论'] a").append(`<span class='c-navigator--reply_count'>(${JSON.parse(response)[0].count})</span>`);
+                    $("li[data-watch_event='消息-评论'] a").append(`<span class='c-navigator--reply_count'>(${response[0].count})</span>`);
                   }
                   if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb")) {
                     $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] a span.index__reply_count___1nqAb:nth-child(2)").css("display", "");
-                    document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb").innerHTML = `(${JSON.parse(response)[0].count})`;
+                    document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] .index__reply_count___1nqAb").innerHTML = `(${response[0].count})`;
                   } else {
-                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] a").append(`<span class='index__reply_count___1nqAb'>(${JSON.parse(response)[0].count})</span>`);
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.0'] a").append(`<span class='index__reply_count___1nqAb'>(${response[0].count})</span>`);
                   }
                 }
-                if (JSON.parse(response)[1].count == 0) {
+                if (response[1].count == 0) {
                   if (document.querySelector("li[data-watch_event='消息-赞'] a .c-navigator--reply_count")) {
                     $("li[data-watch_event='消息-赞'] a .c-navigator--reply_count").css("display", "none");
                   } else if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb")) {
@@ -2088,18 +2142,18 @@ XMLHttpRequest.prototype.open = function () {
                 } else {
                   if (document.querySelector("li[data-watch_event='消息-赞'] a .c-navigator--reply_count")) {
                     $("li[data-watch_event='消息-赞'] a .c-navigator--reply_count:first-child").css("display", "");
-                    document.querySelector("li[data-watch_event='消息-赞'] a .c-navigator--reply_count").innerHTML = `(${JSON.parse(response)[1].count})`;
+                    document.querySelector("li[data-watch_event='消息-赞'] a .c-navigator--reply_count").innerHTML = `(${response[1].count})`;
                   } else {
-                    $("li[data-watch_event='消息-赞'] a").append(`<span class='c-navigator--reply_count'>(${JSON.parse(response)[1].count})</span>`);
+                    $("li[data-watch_event='消息-赞'] a").append(`<span class='c-navigator--reply_count'>(${response[1].count})</span>`);
                   }
                   if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb")) {
                     $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] a span.index__reply_count___1nqAb:nth-child(2)").css("display", "");
-                    document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb").innerHTML = `(${JSON.parse(response)[1].count})`;
+                    document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] .index__reply_count___1nqAb").innerHTML = `(${response[1].count})`;
                   } else {
-                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] a").append(`<span class='index__reply_count___1nqAb'>(${JSON.parse(response)[1].count})</span>`);
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.1'] a").append(`<span class='index__reply_count___1nqAb'>(${response[1].count})</span>`);
                   }
                 }
-                if (JSON.parse(response)[2].count == 0) {
+                if (response[2].count == 0) {
                   if (document.querySelector("li[data-watch_event='消息-系统'] a .c-navigator--reply_count")) {
                     $("li[data-watch_event='消息-系统'] a .c-navigator--reply_count").css("display", "none");
                   } else if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb")) {
@@ -2108,18 +2162,18 @@ XMLHttpRequest.prototype.open = function () {
                 } else {
                   if (document.querySelector("li[data-watch_event='消息-系统'] a .c-navigator--reply_count")) {
                     $("li[data-watch_event='消息-系统'] a .c-navigator--reply_count:first-child").css("display", "");
-                    document.querySelector("li[data-watch_event='消息-系统'] a .c-navigator--reply_count").innerHTML = `(${JSON.parse(response)[2].count})`;
+                    document.querySelector("li[data-watch_event='消息-系统'] a .c-navigator--reply_count").innerHTML = `(${response[2].count})`;
                   } else {
-                    $("li[data-watch_event='消息-系统'] a").append(`<span class='c-navigator--reply_count'>(${JSON.parse(response)[2].count})</span>`);
+                    $("li[data-watch_event='消息-系统'] a").append(`<span class='c-navigator--reply_count'>(${response[2].count})</span>`);
                   }
                   if (document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb")) {
                     $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] a span.index__reply_count___1nqAb:nth-child(2)").css("display", "");
-                    document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb").innerHTML = `(${JSON.parse(response)[2].count})`;
+                    document.querySelector("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] .index__reply_count___1nqAb").innerHTML = `(${response[2].count})`;
                   } else {
-                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] a").append(`<span class='index__reply_count___1nqAb'>(${JSON.parse(response)[2].count})</span>`);
+                    $("li[data-reactid='.0.0.0.0.0.3.0.0.1.0.2'] a").append(`<span class='index__reply_count___1nqAb'>(${response[2].count})</span>`);
                   }
                 }
-                if (JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count == 0) {
+                if (response[0].count + response[1].count + response[2].count == 0) {
                   if (document.querySelector(".c-navigator--message span")) {
                     $(".c-navigator--message span").css("display", "none");
                   } else if (document.querySelector(".index__user_wrap___11XZU .index__message___3tAMD span")) {
@@ -2129,24 +2183,32 @@ XMLHttpRequest.prototype.open = function () {
                   if (document.querySelector(".c-navigator--message span")) {
                     $(".c-navigator--message span:first-child").css("display", "");
                     document.querySelector(".c-navigator--message span").innerHTML = `${
-                      JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count
+                      response[0].count + response[1].count + response[2].count > 99
+                        ? "99+"
+                        : response[0].count + response[1].count + response[2].count
                     }`;
                   } else {
                     $(".c-navigator--message").append(
                       `<span>${
-                        JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count
+                        response[0].count + response[1].count + response[2].count > 99
+                          ? "99+"
+                          : response[0].count + response[1].count + response[2].count
                       }</span>`
                     );
                   }
                   if (document.querySelector(".index__user_wrap___11XZU .index__message___3tAMD span")) {
                     $(".index__user_wrap___11XZU .index__message___3tAMD span:first-child").css("display", "");
                     document.querySelector(".index__user_wrap___11XZU .index__message___3tAMD span").innerHTML = `${
-                      JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count
+                      response[0].count + response[1].count + response[2].count > 99
+                        ? "99+"
+                        : response[0].count + response[1].count + response[2].count
                     }`;
                   } else {
                     $(".index__user_wrap___11XZU .index__message___3tAMD").append(
                       `<span>${
-                        JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count > 99 ? "99+" : JSON.parse(response)[0].count + JSON.parse(response)[1].count + JSON.parse(response)[2].count
+                        response[0].count + response[1].count + response[2].count > 99
+                          ? "99+"
+                          : response[0].count + response[1].count + response[2].count
                       }</span>`
                     );
                   }
@@ -2154,14 +2216,13 @@ XMLHttpRequest.prototype.open = function () {
               }
             },
           });
-        }, 1000);
+        }, 10000000000);
         let url;
         setInterval(() => {
           try {
-            $(".r-home-c-creativityComponent--creativity .r-home-c-creativityComponent--box .r-home-c-creativityComponent--detail .r-home-c-creativityComponent--text-box .r-home-c-creativityComponent--introduction img").attr(
-              "src",
-              "https://static.codemao.cn/coco/player/unstable/r1Z2a8yEj.image/png?hash=Fpf08Z93Z-LgvoMLKzbyACyAvroC"
-            );
+            $(
+              ".r-home-c-creativityComponent--creativity .r-home-c-creativityComponent--box .r-home-c-creativityComponent--detail .r-home-c-creativityComponent--text-box .r-home-c-creativityComponent--introduction img"
+            ).attr("src", "https://static.codemao.cn/coco/player/unstable/r1Z2a8yEj.image/png?hash=Fpf08Z93Z-LgvoMLKzbyACyAvroC");
           } catch (e) {}
 
           for (i of rippleList) {
@@ -2302,17 +2363,20 @@ XMLHttpRequest.prototype.open = function () {
           }
         }, 100);
         function user_face_now(user_face) {
-          GM_xmlhttpRequest({
-            method: "get",
+          $.ajax({
+            type: "GET",
             url: "https://api.codemao.cn/creation-tools/v1/user/center/honor?user_id=" + user_face.href.slice(25 + 5),
-            data: document.cookie,
-            binary: true,
-            async onload({ response }) {
-              if (!JSON.parse(response).avatar_url) {
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            xhrFields: {
+              withCredentials: true,
+            },
+            success: function (response) {
+              if (!response.avatar_url) {
                 user_face.style.backgroundImage = "url('https://cdn-community.codemao.cn/47/community/d2ViXzEwMDFfMTYwMTg3NDJfMTYwMTg3NDJfMTYyNjU3ODkzOTI2M185MGJlYmIyNQ.png')";
                 user_face.style.filter = "grayscale(1)";
               } else {
-                user_face.style.backgroundImage = "url('" + JSON.parse(response).avatar_url + "')";
+                user_face.style.backgroundImage = "url('" + response.avatar_url + "')";
               }
             },
           });
@@ -3000,25 +3064,38 @@ XMLHttpRequest.prototype.open = function () {
           document.querySelector("#person-bg-btn").style.display = "block";
           document.querySelector("#person-color").style.display = "none";
           document.documentElement.style.setProperty("--person-color", "");
-          document.documentElement.style.setProperty("--person-bg", localStorage.getItem("person-bg") || "url(https://cdn-community.codemao.cn/community_frontend/asset/banner_65b4a.png)");
+          document.documentElement.style.setProperty(
+            "--person-bg",
+            localStorage.getItem("person-bg") || "url(https://cdn-community.codemao.cn/community_frontend/asset/banner_65b4a.png)"
+          );
         }
-        GM_xmlhttpRequest({
-          method: "get",
+        $.ajax({
+          type: "GET",
           url: "https://api.codemao.cn/web/users/details",
-          data: document.cookie,
-          binary: true,
-          async onload({ response }) {
-            if (window.location.href.indexOf("user") != -1 && JSON.parse(response).id != parseInt(window.location.href.slice(25 + 5))) {
-              GM_xmlhttpRequest({
-                method: "get",
+          contentType: "application/json;charset=UTF-8",
+          dataType: "json",
+          xhrFields: {
+            withCredentials: true,
+          },
+          success: function (response) {
+            if (window.location.href.indexOf("user") != -1 && response.id != parseInt(window.location.href.slice(25 + 5))) {
+              $.ajax({
+                type: "GET",
                 url: "https://api.codemao.cn/creation-tools/v1/user/center/honor?user_id=" + parseInt(window.location.href.slice(25 + 5)),
-                data: document.cookie,
-                binary: true,
-                async onload({ response }) {
-                  if (JSON.parse(response).user_cover == "") {
-                    document.querySelector(".r-user-c-banner--banner .r-user-c-banner--background").style.setProperty("background-image", "url(https://cdn-community.codemao.cn/community_frontend/asset/banner_65b4a.png)", "important");
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                xhrFields: {
+                  withCredentials: true,
+                },
+                success: function (response) {
+                  if (response.user_cover == "") {
+                    document
+                      .querySelector(".r-user-c-banner--banner .r-user-c-banner--background")
+                      .style.setProperty("background-image", "url(https://cdn-community.codemao.cn/community_frontend/asset/banner_65b4a.png)", "important");
                   } else {
-                    document.querySelector(".r-user-c-banner--banner .r-user-c-banner--background").style.setProperty("background-image", "url(" + JSON.parse(response).user_cover + ")", "important");
+                    document
+                      .querySelector(".r-user-c-banner--banner .r-user-c-banner--background")
+                      .style.setProperty("background-image", "url(" + response.user_cover + ")", "important");
                   }
                 },
               });
@@ -3153,14 +3230,19 @@ XMLHttpRequest.prototype.open = function () {
   function bcm_markdown() {
     if (document.querySelector(".forum_editor:not(.ne-doc-major-editor)")) {
       document.querySelector(".forum_editor").classList.add("ne-doc-major-editor");
-      $(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").after($(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").clone(true).addClass("yuque-sender")).hide();
+      $(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option")
+        .after($(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").clone(true).addClass("yuque-sender"))
+        .hide();
       $(".forum_editor").append(`<iframe style="width:100%;height:100%;" id="yuque" src="https://static.codemao.cn/coco/player/unstable/SykHjpiga.text/html"></iframe>`);
       $("body").append(`<iframe id="preview" src="" style="width: 100%; height: 100%; z-index: -1; position: fixed;"></iframe>`);
       document.querySelector(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option.yuque-sender").onclick = async (e) => {
         let tag;
         e.preventDefault();
         try {
-          if (document.getElementsByClassName("r-community-c-forum_sender--title_input")[0].value.length < 5 || document.getElementsByClassName("r-community-c-forum_sender--title_input")[0].value.length > 50) {
+          if (
+            document.getElementsByClassName("r-community-c-forum_sender--title_input")[0].value.length < 5 ||
+            document.getElementsByClassName("r-community-c-forum_sender--title_input")[0].value.length > 50
+          ) {
             swal({
               title: "错误",
               text: "请填写5-50字的标题",
@@ -3211,8 +3293,8 @@ XMLHttpRequest.prototype.open = function () {
                     Cookie: document.cookie,
                   },
                   async onload({ response }) {
-                    // console.log(JSON.parse(response).id);
-                    window.open("https://shequ.codemao.cn/community/" + JSON.parse(response).id);
+                    // console.log(response.id);
+                    window.open("https://shequ.codemao.cn/community/" + response.id);
                   },
                 });
               } else {
