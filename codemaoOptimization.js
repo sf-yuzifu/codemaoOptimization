@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.50.290
+// @version      1.50.291
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -13,6 +13,9 @@
 // @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.js
 // @require      https://edgeone.gh-proxy.com/github.com/sf-yuzifu/codemaoOptimization/blob/main/libraryComment.js
 // @license      616 SB License
+
+// @updateURL    https://edgeone.gh-proxy.com/github.com/sf-yuzifu/codemaoOptimization/blob/main/codemaoOptimization.js
+// @downloadURL  https://edgeone.gh-proxy.com/github.com/sf-yuzifu/codemaoOptimization/blob/main/codemaoOptimization.js
 
 // ==/UserScript==
 let oldFnOpen = XMLHttpRequest.prototype.open;
@@ -2216,7 +2219,7 @@ XMLHttpRequest.prototype.open = function () {
               }
             },
           });
-        }, 10000000000);
+        }, 1000);
         let url;
         setInterval(() => {
           try {
