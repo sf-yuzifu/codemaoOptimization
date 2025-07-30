@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.50.292
+// @version      1.50.293
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -186,8 +186,8 @@ XMLHttpRequest.prototype.open = function () {
   $("head").append(
     `
     <link rel="shortcut icon" href="https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3">
-    <link href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.css" rel="stylesheet">
-    <script src="https://fastly.jsdelivr.net/gh/sf-yuzifu/eat-fish-together@master/main.js"></script>
+    <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.css" rel="stylesheet">
+    <script src="https://edgeone.gh-proxy.com/github.com/sf-yuzifu/eat-fish-together/blob/master/main.js"></script>
     `
   );
   if (!document.querySelector('meta[name="theme-color"]')) {
