@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.50.293
+// @version      1.50.294
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -11,11 +11,11 @@
 // @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/sweetalert/2.1.2/sweetalert.min.js
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/tldjs/2.3.1/tld.min.js
 // @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.js
-// @require      https://edgeone.gh-proxy.com/github.com/sf-yuzifu/codemaoOptimization/blob/main/libraryComment.js
+// @require      https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/libraryComment.js
 // @license      616 SB License
 
-// @updateURL    https://edgeone.gh-proxy.com/github.com/sf-yuzifu/codemaoOptimization/blob/main/codemaoOptimization.js
-// @downloadURL  https://edgeone.gh-proxy.com/github.com/sf-yuzifu/codemaoOptimization/blob/main/codemaoOptimization.js
+// @updateURL    https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/codemaoOptimization.js
+// @downloadURL  https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/codemaoOptimization.js
 
 // ==/UserScript==
 let oldFnOpen = XMLHttpRequest.prototype.open;
@@ -187,7 +187,7 @@ XMLHttpRequest.prototype.open = function () {
     `
     <link rel="shortcut icon" href="https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3">
     <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.css" rel="stylesheet">
-    <script src="https://edgeone.gh-proxy.com/github.com/sf-yuzifu/eat-fish-together/blob/master/main.js"></script>
+    <script src="https://gitee.com/sf-yuzifu/eat-fish-together/raw/master/main.js"></script>
     `
   );
   if (!document.querySelector('meta[name="theme-color"]')) {

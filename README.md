@@ -48,7 +48,7 @@
 * 如果你使用的是Safari浏览器，可以在[这里（免费）](https://apps.apple.com/cn/app/stay-%E7%94%A8%E6%88%B7%E8%84%9A%E6%9C%AC%E6%89%A9%E5%B1%95%E7%AE%A1%E7%90%86/id1591620171)或者[这里（¥ 12）](https://apps.apple.com/app/apple-store/id1482490089?pt=117945903&ct=tm.net&mt=8)进行安装
 
  2. 安装“编程猫使用优化”脚本 
-* 使用Tampermonkey的可以查看[这个帖子](https://tieba.baidu.com/p/6605006208)进行安装，脚本地址粘贴"[https://edgeone.gh-proxy.com/github.com/sf-yuzifu/codemaoOptimization/blob/main/codemaoOptimization.js](https://edgeone.gh-proxy.com/github.com/sf-yuzifu/codemaoOptimization/blob/main/codemaoOptimization.js)"
-* 使用Stay的点击左上角的“+”号，然后选择“从链接导入”，导入"[https://edgeone.gh-proxy.com/github.com/sf-yuzifu/codemaoOptimization/blob/main/codemaoOptimization.js](https://edgeone.gh-proxy.com/github.com/sf-yuzifu/codemaoOptimization/blob/main/codemaoOptimization.js)"，接着点击右上角的“创建脚本”进行安装即可
+* 使用Tampermonkey的可以查看[这个帖子](https://tieba.baidu.com/p/6605006208)进行安装，脚本地址粘贴"[https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/codemaoOptimization.js](https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/codemaoOptimization.js)"
+* 使用Stay的点击左上角的“+”号，然后选择“从链接导入”，导入"[https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/codemaoOptimization.js](https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/codemaoOptimization.js)"，接着点击右上角的“创建脚本”进行安装即可
 
- 1. 找到导航栏上方的“设置”按钮（铃铛旁边），点击进入设置页面，享受自定义的快乐吧！Enjoy it!
+ 3. 找到导航栏上方的“设置”按钮（铃铛旁边），点击进入设置页面，享受自定义的快乐吧！Enjoy it!
