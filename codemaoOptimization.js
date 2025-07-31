@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.50.294
+// @version      1.50.295
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -11,7 +11,7 @@
 // @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/sweetalert/2.1.2/sweetalert.min.js
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/tldjs/2.3.1/tld.min.js
 // @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.js
-// @require      https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/libraryComment.js
+// @require      https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/libraryComment.js#md5=ee1fde04b50c0e760f51c7c51609789fa352c93a
 // @license      616 SB License
 
 // @updateURL    https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/codemaoOptimization.js
