@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.50.295
+// @version      1.51.296
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -11,7 +11,7 @@
 // @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/sweetalert/2.1.2/sweetalert.min.js
 // @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/tldjs/2.3.1/tld.min.js
 // @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.js
-// @require      https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/libraryComment.js#md5=ee1fde04b50c0e760f51c7c51609789fa352c93a
+// @require      https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/libraryComment.js#sha1=ffacefc5d88c525c29a6ed09b1d6fbd3391420a0
 // @license      616 SB License
 
 // @updateURL    https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/codemaoOptimization.js
@@ -940,7 +940,7 @@ XMLHttpRequest.prototype.open = function () {
                   {
                       color:#fff!important
                   }
-  
+
                   .r-discover--header .r-discover--switch-box li:not(.r-discover--active),
                   .c-post_list--post_container .c-post_list--post_header span,
                   .r-discover-c-tagList--sort_cont .r-discover-c-tagList--sort_item,
@@ -2186,33 +2186,21 @@ XMLHttpRequest.prototype.open = function () {
                   if (document.querySelector(".c-navigator--message span")) {
                     $(".c-navigator--message span:first-child").css("display", "");
                     document.querySelector(".c-navigator--message span").innerHTML = `${
-                      response[0].count + response[1].count + response[2].count > 99
-                        ? "99+"
-                        : response[0].count + response[1].count + response[2].count
+                      response[0].count + response[1].count + response[2].count > 99 ? "99+" : response[0].count + response[1].count + response[2].count
                     }`;
                   } else {
                     $(".c-navigator--message").append(
-                      `<span>${
-                        response[0].count + response[1].count + response[2].count > 99
-                          ? "99+"
-                          : response[0].count + response[1].count + response[2].count
-                      }</span>`
+                      `<span>${response[0].count + response[1].count + response[2].count > 99 ? "99+" : response[0].count + response[1].count + response[2].count}</span>`
                     );
                   }
                   if (document.querySelector(".index__user_wrap___11XZU .index__message___3tAMD span")) {
                     $(".index__user_wrap___11XZU .index__message___3tAMD span:first-child").css("display", "");
                     document.querySelector(".index__user_wrap___11XZU .index__message___3tAMD span").innerHTML = `${
-                      response[0].count + response[1].count + response[2].count > 99
-                        ? "99+"
-                        : response[0].count + response[1].count + response[2].count
+                      response[0].count + response[1].count + response[2].count > 99 ? "99+" : response[0].count + response[1].count + response[2].count
                     }`;
                   } else {
                     $(".index__user_wrap___11XZU .index__message___3tAMD").append(
-                      `<span>${
-                        response[0].count + response[1].count + response[2].count > 99
-                          ? "99+"
-                          : response[0].count + response[1].count + response[2].count
-                      }</span>`
+                      `<span>${response[0].count + response[1].count + response[2].count > 99 ? "99+" : response[0].count + response[1].count + response[2].count}</span>`
                     );
                   }
                 }
@@ -2525,7 +2513,7 @@ XMLHttpRequest.prototype.open = function () {
       {
           background: var(--second-color)!important;
       }
-  
+
       .r-community-r-detail-c-report_posts--option,
       .mce-foot .mce-first.mce-primary,
       .r-community-c-forum_editor--save,
@@ -2613,7 +2601,7 @@ XMLHttpRequest.prototype.open = function () {
           background: var(--second-color)!important;
           color: white!important;
       }
-  
+
       .mce-btn:hover,
       .r-community-r-detail--roules_btn:hover,
       .r-community-r-detail-c-comment_reply--reply_btn:hover,
@@ -2688,7 +2676,7 @@ XMLHttpRequest.prototype.open = function () {
       {
           color: var(--main-color)!important;
       }
-  
+
       .r-community-r-detail-c-report_posts--editor:focus,
       .mce-foot .mce-btn:hover,
       .r-community-r-detail-c-report_comment--editor:focus,
@@ -2738,7 +2726,7 @@ XMLHttpRequest.prototype.open = function () {
       {
           border-color:var(--main-color)!important;
       }
-  
+
       .r-discover--header .r-discover--search-box input:focus + div > .r-discover--icon,
       .c-post_box-post_cont--icon_search.c-post_box-post_cont--focus,
       .r-work_manager-c-action_button--icon.r-work_manager-c-action_button--link,
@@ -2769,14 +2757,14 @@ XMLHttpRequest.prototype.open = function () {
           background-color: var(--second-color)!important;
           border-radius: 2px;
       }
-  
+
       .r-community--notic_item_icon.r-community--sort_2,
       .r-community--notic_item_icon.r-community--sort_3{
           background-image: url(https://static.codemao.cn/coco/player/unstable/rynzhrEzj.image/svg+xml?hash=FuzcLsihkqej0iPVb6rfMO2aBIUv)!important;
           background-color: var(--main-color)!important;
           border-radius: 2px;
       }
-  
+
       .r-work-c-comment_area-c-comment_editor--content_container .r-work-c-comment_area-c-comment_editor--edit_emotion .r-work-c-comment_area-c-comment_editor--insert_emotiion.r-work-c-comment_area-c-comment_editor--active .r-work-c-comment_area-c-comment_editor--icon_emotion,
       .r-work-c-comment_area-c-comment_editor--content_container .r-work-c-comment_area-c-comment_editor--edit_emotion .r-work-c-comment_area-c-comment_editor--insert_emotiion:hover .r-work-c-comment_area-c-comment_editor--icon_emotion,
       .c-post_list--post_container .c-post_list--post_title .c-post_list--status_icon.c-post_list--up,
@@ -2932,7 +2920,7 @@ XMLHttpRequest.prototype.open = function () {
       .r-discover--header .r-discover--search-box .r-discover--icon{
           background: url(https://cdn-community.codemao.cn/community_frontend/asset/icon_sprite_1fd27.svg) no-repeat -215px -202px!important;
       }
-  
+
       .index__header-brand___2nK8h {
           width: 107px;
           height: 100%;
@@ -2944,14 +2932,14 @@ XMLHttpRequest.prototype.open = function () {
           align-items: center;
           justify-content: flex-end;
       }
-  
+
       #zhichiBtnBox,
       .app__popup___SJlRS,
       .app__go-to-top___35N8W,
       .index__footer_wrap___3SAeC {
           display:none;
       }
-  
+
       .c-dialog--dialog_cover {
           position: absolute;
           display: none;
@@ -2962,11 +2950,11 @@ XMLHttpRequest.prototype.open = function () {
           opacity: .5;
           background: #000;
       }
-  
+
       .c-dialog--dialog_wrap .c-dialog--dialog_cover {
         display: unset;
       }
-  
+
       button, div, input, textarea {
           outline: 0;
           padding: 0;
@@ -2979,7 +2967,7 @@ XMLHttpRequest.prototype.open = function () {
       ::-webkit-scrollbar-track-piece {
           background: unset;
       }
-  
+
       .r-work-c-work_info--container .r-work-c-work_info--work_name:hover {
             white-space: unset;
             overflow: unset;
@@ -2987,17 +2975,23 @@ XMLHttpRequest.prototype.open = function () {
             height: auto;
             font-size: 24px;
       }
-  
+
       .swal-footer {
         text-align: center;
       }
-      
+
       .c-navigator--header-content .c-navigator--kn_wrap {
         display:none;
       }
 
       .r-work_manager--work_manager_wrap .r-work_manager--content_wrap .r-work_manager--content_container .r-work_manager--content {
         overflow: hidden;
+      }
+      .c-zhichi_wrap--zhichi-wrap button {
+        background: url(https://creation.bcmcdn.com/445/kitten/d2ViXzIwMDJfNDM4NDAzXzFfMTc1Mzk0ODE3Nzg0NV8zMTAzNTNjMA==) no-repeat, linear-gradient(to top, var(--main-color) 0%, var(--main-color) 41.6%, var(--second-color) 41.6%, var(--second-color) 100%);
+      }
+      .c-zhichi_wrap--zhichi-wrap button:hover {
+        background: url(https://creation.bcmcdn.com/445/kitten/d2ViXzIwMDJfNDM4NDAzXzFfMTc1Mzk0ODE3NzYwM19hYmFjMWUyNg==) no-repeat, linear-gradient(to top, var(--main-color) 0%, var(--main-color) 41.6%, var(--second-color) 41.6%, var(--second-color) 100%);
       }
        </style>`);
         $("li[data-watch_event='设置-入口tab']").click(function () {
@@ -3200,7 +3194,7 @@ XMLHttpRequest.prototype.open = function () {
       .r-work_shop-r-details-component-project_dialog--container {
         height: 525px !important;
       }
-  
+
       .user-status {
         width: 30px;
         height: 30px;
@@ -3210,13 +3204,13 @@ XMLHttpRequest.prototype.open = function () {
         right: 15px;
         bottom: 15px;
       }
-  
+
       .ne-doc-major-editor {
         height: 300px;
         border: 1px solid hsla(0,0%,40%,.28);
         border-radius: 4px;
       }
-  
+
       #yuque::-webkit-scrollbar {
         display:none;
       }
@@ -3340,7 +3334,7 @@ XMLHttpRequest.prototype.open = function () {
                         viewer.setDocument("text/lake", decodeURIComponent(window.atob("${texts}")));
                         window.addEventListener(
                           "message",
-                          (e) => { 
+                          (e) => {
                             if (e.data === "dark") {
                               console.log("dark");
                             } else if (e.data === "light") {
