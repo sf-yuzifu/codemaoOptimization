@@ -1,23 +1,26 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.51.296
+// @version      1.51.298
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
 // @icon         https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3
 // @grant        GM_xmlhttpRequest
-// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js
-// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/sweetalert/2.1.2/sweetalert.min.js
-// @require      https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/tldjs/2.3.1/tld.min.js
-// @require      https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.js
+// @require      https://cdn.staticfile.net/jquery/3.7.1/jquery.min.js
+// @require      https://cdn.staticfile.net/sweetalert/2.1.2/sweetalert.min.js
+// @require      https://cdn.staticfile.net/tldjs/2.3.1/tld.min.js
+// @require      https://cdn.staticfile.net/viewerjs/1.11.6/viewer.min.js
 // @require      https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/libraryComment.js#sha1=ffacefc5d88c525c29a6ed09b1d6fbd3391420a0
+// @require      https://gitee.com/sf-yuzifu/eat-fish-together/raw/master/main.js#sha1=76b8aa4df8c56545893d8cfea8464c8a3d69957c
 // @license      616 SB License
 
 // @updateURL    https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/codemaoOptimization.js
 // @downloadURL  https://gitee.com/sf-yuzifu/codemaoOptimization/raw/main/codemaoOptimization.js
 
 // ==/UserScript==
+unsafeWindow.eat_fish_together = eat_fish_together;
+
 let oldFnOpen = XMLHttpRequest.prototype.open;
 XMLHttpRequest.prototype.open = function () {
   if (arguments[1].includes("hidden_status")) {
@@ -186,8 +189,7 @@ XMLHttpRequest.prototype.open = function () {
   $("head").append(
     `
     <link rel="shortcut icon" href="https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3">
-    <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/viewerjs/1.10.4/viewer.min.css" rel="stylesheet">
-    <script src="https://gitee.com/sf-yuzifu/eat-fish-together/raw/master/main.js"></script>
+    <link href="https://cdn.staticfile.net/viewerjs/1.11.6/viewer.min.css" rel="stylesheet">
     `
   );
   if (!document.querySelector('meta[name="theme-color"]')) {
