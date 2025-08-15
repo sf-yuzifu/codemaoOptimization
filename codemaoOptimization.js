@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.51.298
+// @version      1.52.300
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
 // @icon         https://static.codemao.cn/coco/player/unstable/B1F3qc2Hj.image/svg+xml?hash=FlHXde3J3HLj1PtOWGgeN9fhcba3
-// @grant        GM_xmlhttpRequest
 // @require      https://cdn.staticfile.net/jquery/3.7.1/jquery.min.js
 // @require      https://cdn.staticfile.net/sweetalert/2.1.2/sweetalert.min.js
 // @require      https://cdn.staticfile.net/tldjs/2.3.1/tld.min.js
@@ -20,6 +19,7 @@
 
 // ==/UserScript==
 unsafeWindow.eat_fish_together = eat_fish_together;
+let theme;
 
 let oldFnOpen = XMLHttpRequest.prototype.open;
 XMLHttpRequest.prototype.open = function () {
@@ -204,9 +204,33 @@ XMLHttpRequest.prototype.open = function () {
         document.querySelector("iframe")) ||
       window.location.href.indexOf("reader") != -1
     ) {
-      var iframes = document.querySelectorAll("iframe");
+      var lakexViewer = document.querySelectorAll(".r-community-r-detail--forum_content a");
+      for (var i = 0; i < lakexViewer.length; i++) {
+        if (lakexViewer[i].getAttribute("href").indexOf("https://static.codemao.cn/yuque/preview/") === 0) {
+          var lakexViewer1 = document.createElement("iframe");
+          let urlObj = new URL(lakexViewer[i].getAttribute("href"));
+          let hash = urlObj.hash.substring(1);
+          lakexViewer1.style.width = "100%";
+          lakexViewer1.style.height = hash + "px";
+          lakexViewer1.setAttribute("src", lakexViewer[i].getAttribute("href"));
+          lakexViewer1.setAttribute("allowfullscreen", "");
+          lakexViewer[i].parentNode.replaceChild(lakexViewer1, lakexViewer[i]);
+          if (document.querySelector("iframe[allowfullscreen]").attachEvent) {
+            document.querySelector("iframe[allowfullscreen]").attachEvent("onload", function () {
+              document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage(theme, "*");
+            });
+            document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage(theme, "*");
+          } else {
+            document.querySelector("iframe[allowfullscreen]").onload = function () {
+              document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage(theme, "*");
+            };
+            document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage(theme, "*");
+          }
+        }
+      }
+      var iframes = document.querySelectorAll("iframe:not(#react-tinymce-0_ifr)");
       for (var i = 0; i < iframes.length; i++) {
-        if (!whiteList.includes(tldjs.getDomain(iframes[i].getAttribute("src")))) {
+        if (!whiteList.includes(tldjs.getDomain(iframes[i].getAttribute("src"))) && !iframes[i].getAttribute("src").indexOf("https://static.codemao.cn/yuque/preview/") === 0) {
           iframes[i].style.position = "inherit";
           if (!iframes[i].getAttribute("sandbox") && iframes[i] != document.querySelector(".mce-edit-area iframe")) {
             iframes[i].setAttribute("sandbox", "allow-forms allow-scripts allow-same-origin allow-popups");
@@ -748,7 +772,7 @@ XMLHttpRequest.prototype.open = function () {
             },
           });
         }
-        var theme, whiles;
+        var whiles;
         function to_light() {
           theme = "light";
           document.documentElement.style.setProperty("--main-color", localStorage.getItem("main-color") || "#fec433");
@@ -761,20 +785,18 @@ XMLHttpRequest.prototype.open = function () {
               document.querySelector(".forum_editor .mce-edit-area.mce-container.mce-panel iframe").contentWindow.document.body.style.color = "";
             } catch (e) {}
           });
-          if (
-            (window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) &&
-            parseInt(window.location.href.slice(25 + 10)) &&
-            document.querySelector("iframe[allowfullscreen]")
-          ) {
+          if (document.querySelector("iframe[allowfullscreen]")) {
             document.querySelector("iframe[allowfullscreen]").src = document.querySelector("iframe[allowfullscreen]").src;
             if (document.querySelector("iframe[allowfullscreen]").attachEvent) {
               document.querySelector("iframe[allowfullscreen]").attachEvent("onload", function () {
                 document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage("light", "*");
               });
+              document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage("light", "*");
             } else {
               document.querySelector("iframe[allowfullscreen]").onload = function () {
                 document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage("light", "*");
               };
+              document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage("light", "*");
             }
           }
 
@@ -795,20 +817,18 @@ XMLHttpRequest.prototype.open = function () {
               document.querySelector(".forum_editor .mce-edit-area.mce-container.mce-panel iframe").contentWindow.document.body.style.color = "#fff";
             } catch (e) {}
           });
-          if (
-            (window.location.href.indexOf("community") != -1 || window.location.href.indexOf("wiki/forum/") != -1) &&
-            parseInt(window.location.href.slice(25 + 10)) &&
-            document.querySelector("iframe[allowfullscreen]")
-          ) {
+          if (document.querySelector("iframe[allowfullscreen]")) {
             // document.querySelector("iframe[allowfullscreen]").src = document.querySelector("iframe[allowfullscreen]").src;
             if (document.querySelector("iframe[allowfullscreen]").attachEvent) {
               document.querySelector("iframe[allowfullscreen]").attachEvent("onload", function () {
                 document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage("dark", "*");
               });
+              document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage("dark", "*");
             } else {
               document.querySelector("iframe[allowfullscreen]").onload = function () {
                 document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage("dark", "*");
               };
+              document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage("dark", "*");
             }
           }
           $("head").append(`
@@ -3232,8 +3252,21 @@ XMLHttpRequest.prototype.open = function () {
       $(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option")
         .after($(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option").clone(true).addClass("yuque-sender"))
         .hide();
-      $(".forum_editor").append(`<iframe style="width:100%;height:100%;" id="yuque" src="https://static.codemao.cn/coco/player/unstable/SykHjpiga.text/html"></iframe>`);
+      $(".forum_editor").append(
+        `<iframe style="width:100%;height:100%;" id="yuque" allowfullscreen src="https://static.codemao.cn/Chunkuposs/Hy7KAK3Oxx.html?hash=Ftdce91KXuG9Kj_kCkmt0_NHqRpO"></iframe>`
+      );
       $("body").append(`<iframe id="preview" src="" style="width: 100%; height: 100%; z-index: -1; position: fixed;"></iframe>`);
+      if (document.querySelector("iframe[allowfullscreen]").attachEvent) {
+        document.querySelector("iframe[allowfullscreen]").attachEvent("onload", function () {
+          document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage(theme, "*");
+        });
+        document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage(theme, "*");
+      } else {
+        document.querySelector("iframe[allowfullscreen]").onload = function () {
+          document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage(theme, "*");
+        };
+        document.querySelector("iframe[allowfullscreen]").contentWindow.postMessage(theme, "*");
+      }
       document.querySelector(".r-community-c-forum_sender--bottom_options .r-community-c-forum_sender--option.yuque-sender").onclick = async (e) => {
         let tag;
         e.preventDefault();
@@ -3266,7 +3299,6 @@ XMLHttpRequest.prototype.open = function () {
           };
           tag = tags[document.getElementsByClassName("r-community-c-forum_sender--active")[0].innerText];
           document.querySelector("#yuque").contentWindow.postMessage("data", "*");
-          //<img src="${1}" width="0.1" height="0.1" />
           let texts, trueURL, previewContent;
           window.addEventListener(
             "message",
@@ -3275,12 +3307,16 @@ XMLHttpRequest.prototype.open = function () {
               if (typeof e.data === "number") {
                 let content = `
                   <p style="display:none"></p>
-                  <p>
-                    <embed type="text/html" src="${trueURL}" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  style="width:100%;height:${e.data}px; display: block; margin: 0px auto; max-width: 100%;" />
-                  </p>`;
-                GM_xmlhttpRequest({
+                  <a href="${trueURL}#${e.data}">此帖子使用编程猫使用优化的语雀编辑器发送，请安装新版编程猫使用优化或者点击链接跳转来查看帖子内容</a>
+                  `;
+                $.ajax({
                   url: "https://api.codemao.cn/web/forums/boards/" + tag + "/posts",
-                  method: "POST",
+                  type: "POST",
+                  contentType: "application/json;charset=UTF-8",
+                  dataType: "json",
+                  xhrFields: {
+                    withCredentials: true,
+                  },
                   data: JSON.stringify({
                     title: document.getElementsByClassName("r-community-c-forum_sender--title_input")[0].value,
                     content: content,
@@ -3291,66 +3327,58 @@ XMLHttpRequest.prototype.open = function () {
                     Host: "api.codemao.cn",
                     Cookie: document.cookie,
                   },
-                  async onload({ response }) {
-                    // console.log(response.id);
+                  success: function (response) {
+                    console.log(response.id);
                     window.open("https://shequ.codemao.cn/community/" + response.id);
                   },
                 });
               } else {
                 texts = e.data;
-                previewContent = `<!DOCTYPE html>
-                  <html>
-                    <head>
-                      <meta charset="UTF-8" />
-                      <title>预览</title>
-                      <link
-                        rel="stylesheet"
-                        type="text/css"
-                        href="https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/1.1.1/umd/doc.css"
-                      />
-                      <link
-                        rel="stylesheet"
-                        type="text/css"
-                        href="https://unpkg.com/antd@4.24.13/dist/antd.css"
-                      />
-                      <script
-                        crossorigin
-                        src="https://unpkg.com/react@18/umd/react.production.min.js"
-                      ></script>
-                      <script
-                        crossorigin
-                        src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
-                      ></script>
-                      <script src="https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/1.1.1/umd/doc.umd.js"></script>
-                    </head>
-                    <body>
-                      <div
-                        id="root"
-                        class="ne-doc-major-viewer"
-                      ></div>
-                      <script>
-                        const { createOpenViewer } = window.Doc;
-                        // 创建阅读器
-                        const viewer = createOpenViewer(document.getElementById("root"), {});
-                        // 设置内容
-                        viewer.setDocument("text/lake", decodeURIComponent(window.atob("${texts}")));
-                        window.addEventListener(
-                          "message",
-                          (e) => {
-                            if (e.data === "dark") {
-                              console.log("dark");
-                            } else if (e.data === "light") {
-                              console.log("light");
-                            } else if (e.data === "height") {
-                              window.top.postMessage(document.querySelector("#root").scrollHeight + 100, "*");
-                            }
-                          },
-                          false
-                        );
-                      </script>
-                    </body>
-                  </html>
-                  `;
+                previewContent = `
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>预览</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/1.24.0/umd/doc.css" />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/antd@4.24.13/dist/antd.css" />
+  </head>
+  <body>
+    <div id="root" class="ne-doc-major-viewer"></div>
+    <script>
+      window.onload = function () {
+        const { createOpenViewer } = window.Doc;
+        // 创建阅读器
+        const viewer = createOpenViewer(document.getElementById("root"), { darkMode: true });
+        // 设置内容
+        viewer.setDocument("text/lake", decodeURIComponent(window.atob("${texts}")));
+        viewer.theme.setActiveTheme("default");
+        window.viewer = viewer;
+        window.addEventListener(
+          "message",
+          (e) => {
+            if (e.data === "dark") {
+              viewer.theme.setActiveTheme("dark-mode");
+              document.body.style.backgroundColor = "#525252";
+              console.log("dark");
+            } else if (e.data === "light") {
+              viewer.theme.setActiveTheme("default");
+              document.body.style.backgroundColor = "";
+              console.log("light");
+            } else if (e.data === "height") {
+              window.top.postMessage(document.querySelector("#root").scrollHeight + 50, "*");
+            }
+          },
+          false
+        );
+      };
+    </script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/1.24.0/umd/doc.umd.js"></script>
+  </body>
+</html>`;
 
                 let url, fn, token, key, upload_url;
                 fn = "preview.html";

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>预览</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/1.24.0/umd/doc.css" />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/antd@4.24.13/dist/antd.css" />
+  </head>
+  <body>
+    <div id="root" class="ne-doc-major-viewer"></div>
+    <script>
+      window.onload = function () {
+        const { createOpenViewer } = window.Doc;
+        // 创建阅读器
+        const viewer = createOpenViewer(document.getElementById("root"), { darkMode: true });
+        // 设置内容
+        viewer.setDocument("text/lake", decodeURIComponent(window.atob("${texts}")));
+        viewer.theme.setActiveTheme("default");
+        window.viewer = viewer;
+        window.addEventListener(
+          "message",
+          (e) => {
+            if (e.data === "dark") {
+              viewer.theme.setActiveTheme("dark-mode");
+              document.body.style.backgroundColor = "#525252";
+              console.log("dark");
+            } else if (e.data === "light") {
+              viewer.theme.setActiveTheme("default");
+              document.body.style.backgroundColor = "";
+              console.log("light");
+            } else if (e.data === "height") {
+              window.top.postMessage(document.querySelector("#root").scrollHeight + 100, "*");
+            }
+          },
+          false
+        );
+      };
+    </script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/1.24.0/umd/doc.umd.js"></script>
+  </body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>语雀编辑器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/1.24.0/umd/doc.css" />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/antd@4.24.13/dist/antd.css" />
+    <style>
+      *::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" class="ne-doc-major-editor"></div>
+    <script>
+      window.onload = function () {
+        const { createOpenEditor } = window.Doc;
+        // 创建编辑器
+        let editor = createOpenEditor(document.getElementById("root"), {
+          darkMode: true,
+          input: {},
+          video: {
+            // 配置上传接口,要返回一个promise对象
+            createUploadPromise: (data) => {
+              let url, size, fn, token, key, upload_url;
+              // data是一个File
+              fn = data.name;
+              size = data.size;
+              $.ajax({
+                type: "GET",
+                url:
+                  "https://open-service.codemao.cn/cdn/qi-niu/tokens/uploading?projectName=kitten&filePaths=yuqueLake/videos/" +
+                  Math.random().toString(36).slice(-8) +
+                  "/" +
+                  fn +
+                  "&filePath=yuqueLake/videos/" +
+                  Math.random().toString(36).slice(-8) +
+                  "/" +
+                  fn +
+                  fn +
+                  "&tokensCount=1&fileSign=p1&insertOnly=true&cdnName=qiniu",
+                contentType: "application/json;charset=UTF-8",
+                async: false,
+                xhrFields: {
+                  withCredentials: true,
+                },
+                success: function (res) {
+                  upload_url = res.bucket_url;
+                  token = res["tokens"][0]["token"];
+                  key = res["tokens"][0]["file_path"];
+                },
+              });
+              var formData = new FormData();
+              formData.append("token", token);
+              formData.append("key", key);
+              formData.append("fname", fn);
+              formData.append("file", data);
+              $.ajax({
+                type: "POST",
+                url: "https://upload.qiniup.com/",
+                async: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function (res) {
+                  url = res.key;
+                },
+              });
+
+              return Promise.resolve({
+                url: encodeURI(upload_url + url),
+                size: size, // 文件大小
+                filename: fn,
+                cover: encodeURI(upload_url + url) + "?vframe/jpg/offset/0",
+              });
+            },
+          },
+          file: {
+            // 配置上传接口,要返回一个promise对象
+            createUploadPromise: (data) => {
+              let url, size, fn, token, key, upload_url;
+              // data是一个File
+              fn = data.name;
+              size = data.size;
+              $.ajax({
+                type: "GET",
+                url:
+                  "https://open-service.codemao.cn/cdn/qi-niu/tokens/uploading?projectName=appcraft&filePaths=yuqueLake/files/" +
+                  Math.random().toString(36).slice(-8) +
+                  "/" +
+                  fn +
+                  "&filePath=yuqueLake/files/" +
+                  Math.random().toString(36).slice(-8) +
+                  "/" +
+                  fn +
+                  fn +
+                  "&tokensCount=1&fileSign=p1&insertOnly=true&cdnName=qiniu",
+                contentType: "application/json;charset=UTF-8",
+                async: false,
+                xhrFields: {
+                  withCredentials: true,
+                },
+                success: function (res) {
+                  upload_url = res.bucket_url;
+                  token = res["tokens"][0]["token"];
+                  key = res["tokens"][0]["file_path"];
+                },
+              });
+              var formData = new FormData();
+              formData.append("token", token);
+              formData.append("key", key);
+              formData.append("fname", fn);
+              formData.append("file", data);
+              $.ajax({
+                type: "POST",
+                url: "https://upload.qiniup.com/",
+                async: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function (res) {
+                  url = res.key;
+                },
+              });
+
+              return Promise.resolve({
+                url: encodeURI(upload_url + url),
+                size: size, // 文件大小
+                filename: fn,
+              });
+            },
+          },
+          image: {
+            isCaptureImageURL() {
+              return true;
+            },
+            createUploadPromise: async (request) => {
+              const { type, data } = request;
+              let url, size, fn, token, key, upload_url;
+              if (type === "url") {
+                // data 是一个url，表示需要转存
+                return Promise.resolve({
+                  url: data,
+                  size: "", // 文件大小
+                  filename: "fn",
+                });
+              } else if (type === "file") {
+                // data是一个File
+                fn = data.name;
+                size = data.size;
+                $.ajax({
+                  type: "GET",
+                  url:
+                    "https://open-service.codemao.cn/cdn/qi-niu/tokens/uploading?projectName=appcraft&filePaths=yuqueLake/imgs/" +
+                    Math.random().toString(36).slice(-8) +
+                    "/" +
+                    fn +
+                    "&filePath=yuqueLake/imgs/" +
+                    Math.random().toString(36).slice(-8) +
+                    "/" +
+                    fn +
+                    fn +
+                    "&tokensCount=1&fileSign=p1&insertOnly=true&cdnName=qiniu",
+                  contentType: "application/json;charset=UTF-8",
+                  async: false,
+                  xhrFields: {
+                    withCredentials: true,
+                  },
+                  success: function (res) {
+                    upload_url = res.bucket_url;
+                    token = res["tokens"][0]["token"];
+                    key = res["tokens"][0]["file_path"];
+                  },
+                });
+                var formData = new FormData();
+                formData.append("token", token);
+                formData.append("key", key);
+                formData.append("fname", fn);
+                formData.append("file", data);
+                $.ajax({
+                  type: "POST",
+                  url: "https://upload.qiniup.com/",
+                  async: false,
+                  contentType: false,
+                  processData: false,
+                  data: formData,
+                  success: function (res) {
+                    url = res.key;
+                  },
+                });
+              }
+
+              return Promise.resolve({
+                url: encodeURI(upload_url + url),
+                size: size, // 文件大小
+                filename: fn,
+              });
+            },
+          },
+        });
+
+        window.editor = editor;
+
+        // 设置内容
+        editor.setDocument("text/lake", "");
+        // 监听内容变动
+        editor.on("contentchange", () => {
+          console.info(editor.getDocument("text/lake"));
+        });
+
+        editor.theme.setActiveTheme("default");
+
+        window.addEventListener(
+          "message",
+          (e) => {
+            if (e.data === "dark") {
+              console.log("dark");
+              editor.theme.setActiveTheme("dark-mode");
+            } else if (e.data === "light") {
+              console.log("light");
+              editor.theme.setActiveTheme("default");
+            } else if (e.data === "data") {
+              window.top.postMessage(window.btoa(encodeURIComponent(editor.getDocument("text/lake"))), "*");
+            }
+          },
+          false
+        );
+      };
+    </script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://cdn.staticfile.net/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://gw.alipayobjects.com/render/p/yuyan_npm/@alipay_lakex-doc/1.24.0/umd/doc.umd.js"></script>
+  </body>
+</html>
