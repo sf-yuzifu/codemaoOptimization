@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.52.300
+// @version      1.52.301
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -230,7 +230,7 @@ XMLHttpRequest.prototype.open = function () {
       }
       var iframes = document.querySelectorAll("iframe:not(#react-tinymce-0_ifr)");
       for (var i = 0; i < iframes.length; i++) {
-        if (!whiteList.includes(tldjs.getDomain(iframes[i].getAttribute("src"))) && !iframes[i].getAttribute("src").indexOf("https://static.codemao.cn/yuque/preview/") === 0) {
+        if (!whiteList.includes(tldjs.getDomain(iframes[i].getAttribute("src")))) {
           iframes[i].style.position = "inherit";
           if (!iframes[i].getAttribute("sandbox") && iframes[i] != document.querySelector(".mce-edit-area iframe")) {
             iframes[i].setAttribute("sandbox", "allow-forms allow-scripts allow-same-origin allow-popups");
@@ -3330,6 +3330,7 @@ XMLHttpRequest.prototype.open = function () {
                   success: function (response) {
                     console.log(response.id);
                     window.open("https://shequ.codemao.cn/community/" + response.id);
+                    document.querySelector(".c-model_box--dialog_wrap .c-model_box--content_box .c-model_box--close").click();
                   },
                 });
               } else {
