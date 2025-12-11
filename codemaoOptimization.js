@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         编程猫使用优化
 // @namespace    https://shequ.codemao.cn/user/438403
-// @version      1.52.301
+// @version      1.52.302
 // @description  对于在使用编程猫中遇到的各种问题的部分优化
 // @author       小鱼yuzifu
 // @match        *://shequ.codemao.cn/*
@@ -601,7 +601,7 @@ XMLHttpRequest.prototype.open = function () {
         let PICKCAT = localStorage.getItem("customLogo") || "PICKCAT";
         $(".c-navigator--logo_wrap").append(`<span class='pickcat'>${PICKCAT}</span>`);
         $(".index__header-brand___2nK8h").append(`<span class='pickcat'>${PICKCAT}</span>`);
-        $("li[data-watch_event='下载APP-入口tab']").after(
+        $("li[data-watch_event='更多-入口tab']").before((
           `<li class="event_target data_report c-navigator--item" data-watch_event="设置-入口tab" data-extra_word_one="点击" data-data_report_btn_name="设置-入口tab"><a>设置</a></li>`
         );
         $("li.index__first-nav-content___1Ea0w:last-child").before(
